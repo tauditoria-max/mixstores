@@ -3,153 +3,190 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#1e3a8a">
+<meta name="theme-color" content="#1f4e78">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>Vistoria Shopping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --primary: #1e3a8a; --primary-light: #3b82f6; --success: #16a34a;
-    --warning: #f59e0b; --danger: #dc2626; --gray: #64748b;
-    --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --border: #e2e8f0;
-    --radius: 12px;
+    --primary: #1f4e78;
+    --primary-dark: #163b5c;
+    --primary-light: #2f75b5;
+    --primary-soft: #eaf2fa;
+    --primary-softer: #f5f9fd;
+    --text: #1a1a1a;
+    --text-muted: #808080;
+    --text-soft: #a3a3a3;
+    --border: #e8e8e8;
+    --border-light: #f0f0f0;
+    --bg: #ffffff;
+    --bg-subtle: #fafbfc;
+    --success: #2e7d32;
+    --success-bg: #e8f5e9;
+    --danger: #c62828;
+    --danger-bg: #ffebee;
+    --warning: #e65100;
+    --warning-bg: #fff3e0;
+    --info: #2f75b5;
+    --info-bg: #e3f2fd;
+    --radius: 14px;
+    --radius-sm: 10px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 2px 8px rgba(31,78,120,0.06);
+    --shadow-lg: 0 8px 24px rgba(31,78,120,0.12);
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); font-size: 16px; overscroll-behavior-y: contain; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    overscroll-behavior-y: contain;
+    -webkit-font-smoothing: antialiased;
+  }
 
-  /* LOGIN */
-  .login-screen { position: fixed; inset: 0; z-index: 500; background: linear-gradient(160deg, #1e3a8a, #3b82f6); display: flex; align-items: center; justify-content: center; padding: 24px; padding-top: calc(24px + env(safe-area-inset-top)); padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+  .login-screen { position: fixed; inset: 0; z-index: 500; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 24px; padding-top: calc(24px + env(safe-area-inset-top)); padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
   .login-screen.hidden { display: none; }
-  .login-card { background: white; border-radius: 20px; padding: 28px 24px; width: 100%; max-width: 380px; box-shadow: 0 20px 50px rgba(0,0,0,0.25); }
-  .login-logo { width: 64px; height: 64px; border-radius: 16px; background: #eff6ff; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 16px; }
-  .login-title { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 4px; }
-  .login-subtitle { font-size: 13px; color: var(--gray); text-align: center; margin-bottom: 24px; }
-  .login-error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 10px; padding: 10px 12px; font-size: 13px; margin-bottom: 12px; display: none; line-height: 1.4; }
+  .login-card { background: white; border: 1px solid var(--border); border-radius: 20px; padding: 36px 28px; width: 100%; max-width: 400px; box-shadow: var(--shadow-lg); }
+  .login-logo { width: 72px; height: 72px; border-radius: 20px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; display: flex; align-items: center; justify-content: center; font-size: 34px; margin: 0 auto 20px; box-shadow: 0 8px 20px rgba(31,78,120,0.25); }
+  .login-title { font-size: 22px; font-weight: 700; text-align: center; margin-bottom: 6px; color: var(--primary); letter-spacing: -0.3px; }
+  .login-subtitle { font-size: 14px; color: var(--text-muted); text-align: center; margin-bottom: 28px; }
+  .login-error { background: var(--danger-bg); color: var(--danger); border: 1px solid #ffcdd2; border-radius: 10px; padding: 12px 14px; font-size: 13px; margin-bottom: 14px; display: none; line-height: 1.4; }
   .login-error.show { display: block; }
 
-  /* HEADER */
-  header { position: sticky; top: 0; z-index: 100; background: var(--primary); color: white; padding: 12px 16px; padding-top: calc(12px + env(safe-area-inset-top)); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  header { position: sticky; top: 0; z-index: 100; background: white; border-bottom: 1px solid var(--border); padding: 14px 18px; padding-top: calc(14px + env(safe-area-inset-top)); }
   .header-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-  .header-title { font-size: 17px; font-weight: 600; }
-  .header-subtitle { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+  .header-title { font-size: 16px; font-weight: 700; color: var(--primary); letter-spacing: -0.2px; }
+  .header-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px; }
   .header-right { display: flex; align-items: center; gap: 8px; }
-  .month-badge { background: rgba(255,255,255,0.2); padding: 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; white-space: nowrap; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-  .month-badge:active { background: rgba(255,255,255,0.35); }
-  .logout-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 6px 8px; border-radius: 20px; font-size: 14px; cursor: pointer; }
-  .progress-bar { height: 4px; background: rgba(255,255,255,0.2); margin-top: 10px; border-radius: 2px; overflow: hidden; }
-  .progress-fill { height: 100%; background: #22c55e; width: 0%; transition: width 0.3s ease; }
+  .month-badge { background: var(--primary-soft); color: var(--primary); padding: 7px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.15s; }
+  .month-badge:active { background: #d9e7f5; }
+  .month-badge .arrow { font-size: 9px; opacity: 0.7; }
+  .logout-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 7px 10px; border-radius: 20px; font-size: 14px; cursor: pointer; transition: all 0.15s; }
+  .logout-btn:active { background: var(--border-light); }
+  .progress-bar { height: 3px; background: var(--border-light); margin-top: 12px; border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%); width: 0%; transition: width 0.4s ease; border-radius: 2px; }
 
-  /* NAVEGAÇÃO DE PISO */
-  .floor-nav { display: flex; gap: 8px; padding: 12px 16px; overflow-x: auto; background: white; border-bottom: 1px solid var(--border); position: sticky; top: 78px; z-index: 90; scrollbar-width: none; }
+  .floor-nav { display: flex; gap: 8px; padding: 14px 18px; overflow-x: auto; background: white; border-bottom: 1px solid var(--border); position: sticky; top: 84px; z-index: 90; scrollbar-width: none; }
   .floor-nav::-webkit-scrollbar { display: none; }
-  .floor-btn { flex-shrink: 0; padding: 8px 16px; border-radius: 20px; border: 1.5px solid var(--border); background: white; color: var(--gray); font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-  .floor-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-  .floor-count { background: rgba(0,0,0,0.08); border-radius: 10px; padding: 1px 7px; font-size: 11px; }
+  .floor-btn { flex-shrink: 0; padding: 9px 16px; border-radius: 22px; border: 1px solid var(--border); background: white; color: var(--text-muted); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; font-family: inherit; }
+  .floor-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(31,78,120,0.2); }
+  .floor-count { background: rgba(0,0,0,0.06); border-radius: 12px; padding: 2px 8px; font-size: 11px; font-weight: 700; }
   .floor-btn.active .floor-count { background: rgba(255,255,255,0.25); }
 
-  /* LISTA DE LOJAS */
-  main { padding: 12px 16px 100px; padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
-  .store-list { display: flex; flex-direction: column; gap: 10px; }
-  .store-card { background: var(--card); border-radius: var(--radius); padding: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border-left: 5px solid var(--border); transition: border-color 0.2s; }
-  .store-card[data-status="aberta"] { border-left-color: var(--success); }
+  main { padding: 16px 18px 120px; padding-bottom: calc(120px + env(safe-area-inset-bottom)); background: var(--bg-subtle); min-height: calc(100vh - 200px); }
+  .store-list { display: flex; flex-direction: column; gap: 12px; }
+  .store-card { background: white; border-radius: var(--radius); padding: 16px; border: 1px solid var(--border-light); border-left: 4px solid var(--text-soft); box-shadow: var(--shadow-sm); transition: all 0.2s ease; position: relative; }
+  .store-card[data-status="aberta"]  { border-left-color: var(--success); }
   .store-card[data-status="fechada"] { border-left-color: var(--danger); }
-  .store-card[data-status="tapume"] { border-left-color: var(--warning); }
-  .store-card[data-status="nova"] { border-left-color: var(--primary-light); }
-  .store-card[data-status="pendente"] { border-left-color: var(--gray); }
-  .store-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
-  .store-name { flex: 1; font-size: 21px; font-weight: 700; color: var(--primary); line-height: 1.2; letter-spacing: -0.3px; word-break: break-word; }
-  .store-date { font-size: 11px; color: var(--gray); white-space: nowrap; padding-top: 4px; }
+  .store-card[data-status="tapume"]  { border-left-color: var(--warning); }
+  .store-card[data-status="nova"]    { border-left-color: var(--primary-light); }
+  .store-card[data-status="pendente"]{ border-left-color: var(--text-soft); }
+  .store-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 14px; }
+  .store-name { flex: 1; font-size: 18px; font-weight: 700; color: var(--primary); line-height: 1.25; letter-spacing: -0.2px; word-break: break-word; }
+  .store-date { font-size: 11px; color: var(--text-muted); white-space: nowrap; padding-top: 4px; font-weight: 500; }
 
-  /* BOTÕES DE STATUS INLINE */
   .status-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-  .status-btn { padding: 10px 4px; border: 1.5px solid var(--border); border-radius: 10px; background: white; font-size: 11px; font-weight: 600; color: var(--gray); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.15s; font-family: inherit; line-height: 1.1; min-height: 52px; }
-  .status-btn .ico { font-size: 18px; line-height: 1; }
-  .status-btn:active { transform: scale(0.95); }
-  .status-btn[data-value="aberta"].selected  { background: #dcfce7; border-color: var(--success); color: #15803d; }
-  .status-btn[data-value="fechada"].selected { background: #fee2e2; border-color: var(--danger); color: #b91c1c; }
-  .status-btn[data-value="tapume"].selected  { background: #fef3c7; border-color: var(--warning); color: #b45309; }
-  .status-btn[data-value="nova"].selected    { background: #dbeafe; border-color: var(--primary-light); color: #1d4ed8; }
+  .status-btn { padding: 9px 4px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: white; font-size: 11px; font-weight: 600; color: var(--text-muted); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.15s ease; font-family: inherit; line-height: 1.15; min-height: 50px; letter-spacing: -0.1px; }
+  .status-btn .ico { font-size: 17px; line-height: 1; }
+  .status-btn:active { transform: scale(0.96); }
+  .status-btn[data-value="aberta"].selected { background: var(--success-bg); border-color: var(--success); color: var(--success); }
+  .status-btn[data-value="fechada"].selected { background: var(--danger-bg); border-color: var(--danger); color: var(--danger); }
+  .status-btn[data-value="tapume"].selected { background: var(--warning-bg); border-color: var(--warning); color: var(--warning); }
+  .status-btn[data-value="nova"].selected { background: var(--info-bg); border-color: var(--primary-light); color: var(--primary-light); }
 
-  .store-card.saved { animation: flashSaved 0.6s ease; }
-  @keyframes flashSaved { 0% { background: #f0fdf4; } 100% { background: var(--card); } }
+  .store-card.saved { animation: flashSaved 0.7s ease; }
+  @keyframes flashSaved { 0% { background: var(--primary-softer); } 100% { background: white; } }
 
-  .store-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); gap: 8px; }
-  .obs-btn { flex: 1; background: transparent; border: none; color: var(--gray); font-size: 12px; padding: 6px 4px; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 6px; font-family: inherit; min-width: 0; }
+  .store-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-light); gap: 8px; }
+  .obs-btn { flex: 1; background: transparent; border: none; color: var(--text-muted); font-size: 12px; padding: 6px 4px; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 6px; font-family: inherit; min-width: 0; font-weight: 500; }
   .obs-btn span.text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .obs-btn.has-obs { color: #1d4ed8; font-weight: 500; }
-  .menu-btn { background: transparent; border: none; color: var(--gray); font-size: 18px; padding: 4px 8px; cursor: pointer; border-radius: 6px; line-height: 1; }
-  .menu-btn:active { background: var(--bg); }
+  .obs-btn.has-obs { color: var(--primary-light); font-weight: 600; }
+  .menu-btn { background: transparent; border: none; color: var(--text-muted); font-size: 20px; padding: 4px 10px; cursor: pointer; border-radius: 8px; line-height: 1; transition: background 0.15s; }
+  .menu-btn:active { background: var(--border-light); }
 
-  /* FAB */
-  .fab { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); width: 56px; height: 56px; border-radius: 50%; background: var(--primary); color: white; border: none; font-size: 24px; box-shadow: 0 4px 12px rgba(30,58,138,0.4); z-index: 50; display: flex; align-items: center; justify-content: center; }
+  .fab { position: fixed; right: 18px; bottom: calc(18px + env(safe-area-inset-bottom)); width: 58px; height: 58px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; border: none; font-size: 26px; box-shadow: 0 8px 24px rgba(31,78,120,0.35); z-index: 50; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.15s; }
+  .fab:active { transform: scale(0.94); }
 
-  /* SHEETS */
-  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+  .overlay { position: fixed; inset: 0; background: rgba(26,26,26,0.4); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.25s; backdrop-filter: blur(2px); }
   .overlay.open { opacity: 1; pointer-events: auto; }
-  .sheet { position: fixed; left: 0; right: 0; bottom: 0; background: white; border-radius: 20px 20px 0 0; z-index: 201; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1); max-height: 90vh; display: flex; flex-direction: column; padding-bottom: env(safe-area-inset-bottom); }
+  .sheet { position: fixed; left: 0; right: 0; bottom: 0; background: white; border-radius: 24px 24px 0 0; z-index: 201; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1); max-height: 92vh; display: flex; flex-direction: column; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -10px 40px rgba(31,78,120,0.12); }
   .sheet.open { transform: translateY(0); }
-  .sheet-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 10px auto 4px; }
-  .sheet-header { padding: 8px 20px 12px; border-bottom: 1px solid var(--border); }
-  .sheet-title { font-size: 18px; font-weight: 700; }
-  .sheet-subtitle { font-size: 13px; color: var(--gray); margin-top: 2px; }
-  .sheet-body { padding: 16px 20px; overflow-y: auto; flex: 1; }
-  .form-group { margin-bottom: 18px; }
-  .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--gray); margin-bottom: 8px; text-transform: uppercase; }
-  input, textarea, select { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 16px; font-family: inherit; background: white; color: var(--text); outline: none; transition: border-color 0.15s; }
-  input:focus, textarea:focus, select:focus { border-color: var(--primary-light); }
-  textarea { resize: vertical; min-height: 70px; }
-  .sheet-footer { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: white; }
-  .btn { flex: 1; padding: 14px; border-radius: 12px; border: none; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; }
-  .btn-secondary { background: var(--bg); color: var(--text); }
-  .btn-primary { background: var(--primary); color: white; }
-  .btn:active { opacity: 0.85; }
+  .sheet-handle { width: 44px; height: 4px; background: var(--border); border-radius: 2px; margin: 12px auto 6px; }
+  .sheet-header { padding: 6px 22px 16px; border-bottom: 1px solid var(--border-light); }
+  .sheet-title { font-size: 19px; font-weight: 700; color: var(--primary); letter-spacing: -0.2px; }
+  .sheet-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+  .sheet-body { padding: 20px 22px; overflow-y: auto; flex: 1; }
+  .form-group { margin-bottom: 20px; }
+  .form-label { display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  input, textarea, select { width: 100%; padding: 13px 15px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 16px; font-family: inherit; background: white; color: var(--text); outline: none; transition: all 0.15s; }
+  input:focus, textarea:focus, select:focus { border-color: var(--primary-light); box-shadow: 0 0 0 3px var(--primary-soft); }
+  textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
 
-  .menu-item { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 10px; cursor: pointer; font-size: 15px; color: var(--text); transition: background 0.15s; }
-  .menu-item:active { background: var(--bg); }
-  .menu-item .emoji { font-size: 20px; width: 24px; text-align: center; }
+  .sheet-footer { padding: 14px 22px; border-top: 1px solid var(--border-light); display: flex; gap: 10px; background: white; }
+  .btn { flex: 1; padding: 15px; border-radius: var(--radius-sm); border: none; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.15s; letter-spacing: -0.1px; }
+  .btn-secondary { background: var(--bg-subtle); color: var(--text-muted); border: 1px solid var(--border); }
+  .btn-secondary:active { background: var(--border-light); }
+  .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(31,78,120,0.25); }
+  .btn-primary:active { background: var(--primary-dark); transform: translateY(1px); }
+  .btn-danger { background: var(--danger); color: white; box-shadow: 0 4px 12px rgba(198,40,40,0.25); }
+  .btn-danger:active { background: #a01b1b; transform: translateY(1px); }
+
+  .menu-item { display: flex; align-items: center; gap: 14px; padding: 15px; border-radius: var(--radius-sm); cursor: pointer; font-size: 15px; color: var(--text); transition: background 0.15s; font-weight: 500; }
+  .menu-item:active { background: var(--bg-subtle); }
+  .menu-item .emoji { font-size: 20px; width: 26px; text-align: center; }
   .menu-item.danger { color: var(--danger); }
 
-  /* ESTADOS */
-  .empty-state { text-align: center; padding: 60px 20px; color: var(--gray); }
-  .empty-state .icon { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
-  .section-title { font-size: 12px; font-weight: 700; color: var(--gray); text-transform: uppercase; margin: 4px 0 10px 4px; display: flex; justify-content: space-between; align-items: center; }
-  .section-title .resumo-inline { font-size: 10px; color: var(--gray); text-transform: none; letter-spacing: 0; font-weight: 500; }
+  .empty-state { text-align: center; padding: 80px 20px; color: var(--text-muted); }
+  .empty-state .icon { font-size: 52px; margin-bottom: 14px; opacity: 0.3; }
+  .empty-state .title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .empty-state .desc { font-size: 13px; color: var(--text-muted); }
 
-  /* CÓPIA */
-  .copy-banner { background: linear-gradient(135deg, #fef3c7, #fde68a); border: 1px solid #f59e0b; border-radius: var(--radius); padding: 14px; margin-bottom: 12px; display: none; }
+  .section-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin: 4px 0 12px 4px; display: flex; justify-content: space-between; align-items: center; }
+  .section-title .resumo-inline { font-size: 11px; color: var(--text-muted); text-transform: none; letter-spacing: 0; font-weight: 500; }
+
+  .copy-banner { background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); border: 1px solid #ffe082; border-radius: var(--radius); padding: 16px; margin-bottom: 14px; display: none; }
   .copy-banner.show { display: block; }
-  .copy-banner-title { font-size: 14px; font-weight: 700; color: #92400e; margin-bottom: 6px; }
-  .copy-banner-text { font-size: 13px; color: #78350f; margin-bottom: 12px; line-height: 1.4; }
+  .copy-banner-title { font-size: 14px; font-weight: 700; color: #7a5a00; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .copy-banner-text { font-size: 13px; color: #7a5a00; margin-bottom: 14px; line-height: 1.5; }
   .copy-banner-actions { display: flex; gap: 8px; }
-  .copy-banner-actions .btn { padding: 10px; font-size: 13px; }
-  .btn-copy { background: #f59e0b; color: white; }
-  .btn-ghost { background: rgba(255,255,255,0.6); color: #78350f; }
-  .resumo-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .copy-banner-actions .btn { padding: 11px; font-size: 13px; }
+  .btn-copy { background: #b8860b; color: white; box-shadow: 0 4px 12px rgba(184,134,11,0.25); }
+  .btn-copy:active { background: #8b6508; }
+  .btn-ghost { background: rgba(255,255,255,0.7); color: #7a5a00; border: 1px solid rgba(122,90,0,0.2); }
+
+  .resumo-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border-light); font-size: 14px; align-items: center; gap: 8px; }
   .resumo-item:last-child { border-bottom: none; }
-  .resumo-label { color: var(--gray); }
-  .resumo-valor { font-weight: 600; }
-  .resumo-destaque { background: #eff6ff; border-radius: 10px; padding: 12px; margin: 12px 0; font-size: 13px; color: #1e40af; line-height: 1.5; }
-  .mes-lista-item { cursor: pointer; padding: 12px; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-  .mes-lista-item.selecionado { border-color: #1e3a8a; background: #eff6ff; }
+  .resumo-label { color: var(--text); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+  .resumo-valor { font-weight: 600; color: var(--text-muted); font-size: 13px; white-space: nowrap; }
+  .resumo-destaque { background: var(--primary-softer); border: 1px solid var(--primary-soft); border-radius: var(--radius-sm); padding: 14px; margin: 12px 0 16px; font-size: 13px; color: var(--primary); line-height: 1.6; }
 
-  /* HISTÓRICO */
-  .hist-item { display: flex; gap: 12px; padding: 12px; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; align-items: flex-start; }
-  .hist-mes { background: var(--primary); color: white; border-radius: 8px; padding: 6px 10px; font-size: 12px; font-weight: 700; white-space: nowrap; min-width: 65px; text-align: center; }
+  .mes-lista-item { cursor: pointer; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; transition: all 0.15s; }
+  .mes-lista-item:active { background: var(--bg-subtle); }
+  .mes-lista-item.selecionado { border-color: var(--primary-light); background: var(--primary-softer); }
+  .mes-lista-item.selecionado .resumo-label { color: var(--primary); font-weight: 600; }
+
+  .hist-item { display: flex; gap: 14px; padding: 14px; border: 1px solid var(--border-light); border-radius: var(--radius-sm); margin-bottom: 10px; align-items: flex-start; background: white; }
+  .hist-mes { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; border-radius: 10px; padding: 8px 12px; font-size: 12px; font-weight: 700; white-space: nowrap; min-width: 68px; text-align: center; box-shadow: 0 2px 6px rgba(31,78,120,0.2); }
   .hist-info { flex: 1; min-width: 0; }
-  .hist-status { font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 4px; }
-  .hist-status.aberta  { color: #15803d; }
-  .hist-status.fechada { color: #b91c1c; }
-  .hist-status.tapume  { color: #b45309; }
-  .hist-status.nova    { color: #1d4ed8; }
-  .hist-status.pendente{ color: var(--gray); }
-  .hist-obs { font-size: 12px; color: var(--gray); line-height: 1.4; margin-top: 2px; }
-  .hist-data { font-size: 11px; color: var(--gray); margin-top: 4px; }
+  .hist-status { font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+  .hist-status.aberta  { color: var(--success); }
+  .hist-status.fechada { color: var(--danger); }
+  .hist-status.tapume  { color: var(--warning); }
+  .hist-status.nova    { color: var(--primary-light); }
+  .hist-status.pendente{ color: var(--text-muted); }
+  .hist-obs { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-top: 4px; background: var(--bg-subtle); padding: 8px 10px; border-radius: 8px; }
+  .hist-data { font-size: 11px; color: var(--text-soft); margin-top: 6px; }
 
-  /* SYNC */
-  .sync-status { position: fixed; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); background: rgba(30,41,59,0.9); color: white; font-size: 11px; padding: 6px 12px; border-radius: 20px; z-index: 60; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+  .sync-status { position: fixed; left: 18px; bottom: calc(18px + env(safe-area-inset-bottom)); background: var(--primary); color: white; font-size: 12px; font-weight: 500; padding: 8px 14px; border-radius: 20px; z-index: 60; opacity: 0; transition: opacity 0.3s; pointer-events: none; box-shadow: 0 4px 12px rgba(31,78,120,0.3); }
   .sync-status.show { opacity: 1; }
-  .sync-status.erro { background: rgba(220,38,38,0.95); }
+  .sync-status.erro { background: var(--danger); }
 
-  .action-row { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
-  .action-row .btn { padding: 12px; font-size: 13px; }
+  .action-row { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+  .action-row .btn { padding: 13px; font-size: 13px; text-align: center; }
 </style>
 </head>
 <body>
@@ -333,14 +370,22 @@
 <!-- SHEET: SELETOR DE MÊS -->
 <div class="sheet" id="sheetMes">
   <div class="sheet-handle"></div>
-  <div class="sheet-header"><div class="sheet-title">Selecionar mês</div><div class="sheet-subtitle">Navegue entre vistorias</div></div>
+  <div class="sheet-header">
+    <div class="sheet-title">Selecionar mês</div>
+    <div class="sheet-subtitle">Navegue entre vistorias</div>
+  </div>
   <div class="sheet-body">
-    <div class="form-group"><label class="form-label">Mês / ano</label><input type="month" id="inputMes"></div>
+    <div class="form-group">
+      <label class="form-label">Mês / ano</label>
+      <input type="month" id="inputMes">
+    </div>
     <div id="listaMesesExistentes"></div>
     <div class="action-row">
       <button class="btn btn-secondary" onclick="abrirNovaVistoria()">🆕 Nova vistoria (mês anterior)</button>
+      <button class="btn btn-secondary" onclick="abrirEscolherCopia()">📋 Copiar roteiro de outro mês</button>
       <button class="btn btn-secondary" onclick="exportarCSV()">📊 Exportar CSV (mudanças do mês)</button>
       <button class="btn btn-secondary" onclick="resetarRoteiroMes()">🔄 Resetar roteiro deste mês</button>
+      <button class="btn btn-danger" onclick="excluirMes()">🗑 Excluir este mês</button>
     </div>
   </div>
   <div class="sheet-footer">
@@ -352,11 +397,27 @@
 <!-- SHEET: RESUMO DA CÓPIA -->
 <div class="sheet" id="sheetResumoCopia">
   <div class="sheet-handle"></div>
-  <div class="sheet-header"><div class="sheet-title">Resumo da cópia</div><div class="sheet-subtitle" id="resumoSubtitulo">—</div></div>
+  <div class="sheet-header">
+    <div class="sheet-title">Resumo da cópia</div>
+    <div class="sheet-subtitle" id="resumoSubtitulo">—</div>
+  </div>
   <div class="sheet-body" id="resumoBody"></div>
   <div class="sheet-footer">
     <button class="btn btn-secondary" onclick="fecharSheets()">Cancelar</button>
     <button class="btn btn-primary" onclick="confirmarCopia()">Confirmar cópia</button>
+  </div>
+</div>
+
+<!-- SHEET: ESCOLHER MÊS DE ORIGEM PARA CÓPIA -->
+<div class="sheet" id="sheetEscolherOrigem">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title">Copiar roteiro de…</div>
+    <div class="sheet-subtitle">Escolha o mês de origem</div>
+  </div>
+  <div class="sheet-body" id="escolherOrigemBody"></div>
+  <div class="sheet-footer">
+    <button class="btn btn-secondary" onclick="fecharSheets()">Cancelar</button>
   </div>
 </div>
 
@@ -368,15 +429,15 @@ import { getFirestore, doc, getDoc, setDoc }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // ============================================================
-// CONFIGURAÇÃO FIREBASE (SUBSTITUA pelos seus dados!)
+// CONFIGURAÇÃO FIREBASE
 // ============================================================
 const firebaseConfig = {
-  apiKey: "AIzaSyA5o8k3tOuNqlvNgx0n7R3NJEPqW41dN-c",
-  authDomain: "competitive-market-analysis.firebaseapp.com",
-  projectId: "competitive-market-analysis",
-  storageBucket: "competitive-market-analysis.firebasestorage.app",
-  messagingSenderId: "292655933317",
-  appId: "1:292655933317:web:e33c18afcb55fc5d5846ec"
+  apiKey: "AIzaSyBcMajlezda28IB97hU3eYeBi-gICgNedM",
+  authDomain: "mixstores-94fef.firebaseapp.com",
+  projectId: "mixstores-94fef",
+  storageBucket: "mixstores-94fef.firebasestorage.app",
+  messagingSenderId: "446707663427",
+  appId: "1:446707663427:web:51091762a36fbf28af4af6"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -389,35 +450,34 @@ const DOC_REF = doc(db, 'vistorias', 'shoppingCenter');
 // ============================================================
 const ROTEIRO_BASE = {
   "Térreo": [
-    'Narciso Enxovais','Vaga','Americanas','Universo dos Games','Zumaz','Criativa Brinquedos',
+    'Narciso Enxovais','Vaga','Vaga','Vaga','Americanas','Universo dos Games','Zumaz','Criativa Brinquedos',
     'Johnny Joy','Bella VIP','Centro Cell','Fri-Sabor','Coffee Shop São Braz','Vaga','Timbushop','Colchões Castor',
     'Farmácia Santa Maria','First Class','Claro','Rommanel','Browbar / Depilway','CVC','JDL Celulares','Chiquinho Sorvetes',
     'Vaga','Le Biscuit','Vivo','Bessie Beauty Club','Mundo das Vitaminas','Centauro','Vonny Cosméticos','Vaga','Vaga','Vaga','Vaga','Vaga',
     'Casa do Celular','Íris Semijoias','Reparus','Laser Eletro','Aliança Colchões','G&E Acessórios','Unigames','Ótica Liberty',
     'Zeiss','Ótica Líder','Colchões Ortobom','Tim','Ótica Chilli Beans','Espaço Laser','World Technology','Vaga','Vaga',
     'Óticas Carol','Drogaria São Paulo','Mundo do Cabeleireiro','Oculum','Mundo do Cabeleireiro','Linda Semijoias e Acessórios','SOS Relógios',
-    'Lajoya','Club da Miçanga & Cia da Montagem','Millena Móveis','World Tennis','Vaga','Vaga'
+    'Lajoya','Club da Miçanga & Cia da Montagem','Millena Móveis','World Tennis','Vaga','Vaga','Millena Móveis','Drogaria São Paulo'
   ],
   "L1": [
-    'Riachuelo','Vaga','Vaga Oficina de Slimes','Vaga Oficina de Slimes','Kid Stok','Danilas Semijoias','C&A','Vaga','Ótica Capibaribe',
-    'Prata Rara','Vaga','Vaga','Diva','Nel Blu','Farmácia Pague Menos','La Camiceria','Taco','Vaga','Vaga','Vaga','Vaga','Vaga','Vaga','Vaga',
-    'Kalunga','Espaço Massagem - Pop Up','Magazine Luiza','Esposende','Avenida','Vaga','Renner','Curinga Celular','Duobrow - Studio de Beleza',
-    'Figueiras Calçados','Vaga','Vaga','Vaga','Vaga','Mundo Verde','Banco Bradesco','Cama Decor','Top Plush','Vaga','Vaga','Vaga','Vaga','Cia do Terno','Via Stillus',
-    'Di Santinni','Cristine','Vaga','Soff','Vagamundo','Vaga','Polo Club England','All Pé','Via Laser','Vaga','Vaga','Pharmapele','Vaga',
-    'Diorne','Natura','Usaflex','Dwz','Lupo','Boticário','IPlace Mobile','Blanche','Spuk','Clube Melissa','Vivara',"Rota's Makeup",'Vaga',
-    'Arena Fit','Hering','Vaga','Tropical','Di Farias Atelier','Lets Make','Mr. Black Café','Vaga'
+    'Riachuelo','Vaga','Vaga Oficina de Slimes','Kid Stok','Danilas Semijoias','C&A','Vaga','Ótica Capibaribe','Prata Rara','Vaga','Vaga','Diva','Nel Blu',
+    'Farmácia Pague Menos','La Camiceria','Taco','Vaga','Vaga','Vaga','Vaga','Vaga','Vaga','Vaga','Kalunga','Espaço Massagem - Pop Up',
+    'Magazine Luiza','Esposende','Avenida','Vaga','Renner','Curinga Celular','Duobrow - Studio de Beleza','Figueiras Calçados','Vaga','Vaga','Vaga',
+    'Mundo Verde','Banco Bradesco','Cama Decor','Top Plush','Vaga','Vaga','Cia do Terno','Via Stillus','Di Santinni','Cristine','Vaga','Soff',
+    'Vagamundo','Vaga','Vaga','Polo Club England','All Pé','Via Laser','Vaga','Vaga','Pharmapele','Vaga','Diorne','Natura','Usaflex','Dwz','Lupo',
+    'Boticário','IPlace Mobile','Blanche','Spuk','Clube Melissa','Vivara',"Rota's Makeup",'Vaga','Arena Fit','Hering','Vaga','Tropical',
+    'Di Farias Atelier','Lets Make','Mr. Black Café','Vaga'
   ],
   "L2": [
     'Riachuelo','Espaço Olinda','Vaga','Vaga','C&A','Vaga','Vaga','Vaga','Nova Foco','Vaga','Vaga','Vaga','Cyclone','Sonho dos Pés','Constance',
     'Santa Lolla','Via Mia','Via Sol','Vaga','Bagaggio','Divino Barbearia','Cacau Show','Cheirin Bão','Vaga','Studio Z','Caixa Econômica Federal',
-    'Ri Happy','Renner','Vaga','Salti Verso','Vaga','Vaga','San Paolo','Vaga','Dinossauro Discos','Vaga','Vaga - Import Brink','Vaga - Import Brink',
-    'Vaga - Import Brink','Vaga - Import Brink','Vaga - Import Brink','Vaga - Import Brink',
-    'Caixas Eletrônicos - Banco 24 Horas','Vaga','Vaga','Vaga','Vaga','Vaga','Vaga','Vaga','Arezzo','Belle Accessoires','Havaianas',
+    'Ri Happy','Renner','Vaga','Salti Verso','Vaga','Vaga','San Paolo','Vaga','Dinossauro Discos','Vaga - Import Brink',
+    'Caixas Eletrônicos - Banco 24 Horas','Vaga','Vaga','Vaga','Vaga','Vaga','Vaga','Vaga','Vaga','Arezzo','Belle Accessoires','Havaianas',
     'Vaga','Bali','Espaço Cultural - Pop Up','Vaga','Damyller','Kinitos','Joan Shoes','Lalelilo','Estoque','Vaga','Seaway','Vaga',
-    'Vaga - Eu Amo Ler','Vaga - Eu Amo Ler','Vaga - Eu Amo Ler','Vaga - Eu Amo Ler','Kinitos','Vaga','Vaga','Morana','Mr. Cheney'
+    'Vaga - Eu Amo Ler','Kinitos','Vaga','Vaga','Morana','Mr. Cheney'
   ],
   "L3": [
-    'Livraria Leitura','Montana Airsoft','Tapume - Paço Real','Game Station','Smart Fit','Subway','Tapume - Mini Kalzone','Giraffas',
+    'Livraria Leitura','Montana Airsoft','Tapume - Paço Real','Game Station','Smart Fit','Subway','Tapume - Minikalzone','Giraffas',
     "Juliet's Doces e Salgados",'Don Pastello','Fred Chicken','Vaga','Mc Donalds','Cinépolis','Milky Moo','Julietto Festa','Donatário','KFC',
     'Capilé','Redbake','Dinny','Tempero da Fazenda','Vaga','Vaga','Vaga',"Habib's",'Pastel Mania',"Bob's",'Iang Chao','Sal e Brasa',
     'Burger King','Vaga','Vaga','Vaga'
@@ -425,24 +485,27 @@ const ROTEIRO_BASE = {
   "L4": [
     'Cinépolis Vip','Uninassau','Fight House','Vaga','Neoenergia','Wizard Brasil','Vaga','Vaga','Vaga','Vaccine','Accept Saúde',
     'Espaço Massagem','Accept Saúde II','Expresso Cidadão','Esperança Consultório','Tapume - Cartório Rita Rangel','Boris Berenstein',
-    'Hope','Tapume - Studio Arquitetura Criativa','Nova Placa','Infinity Consumidor','Go Service','Vaga','Vaga','Vaga','Vaga'
+    'Hope','Tapume - Studio Arquitetura Criativa','Nova Placa','Infinity Consumidor','Go Service','Vaga','Vaga','Vaga','Vaga','Vaga','Vaga','Vaga'
   ]
 };
 
 // ============================================================
-// UTILITÁRIOS DE DATA
+// ORDEM FIXA DE EXIBIÇÃO DOS PISOS
+// ============================================================
+const ORDEM_PISOS = ['Térreo', 'L1', 'L2', 'L3', 'L4'];
+
+// ============================================================
+// UTILITÁRIOS
 // ============================================================
 function mesAtualChave() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
 }
-
 function mesAnteriorChave(chave) {
   const [ano, mes] = chave.split('-').map(Number);
   const d = new Date(ano, mes - 2, 1);
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
 }
-
 const MESES_CURTO = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 const MESES_LONGO = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 function nomeMesCurto(c) { const [a,n]=c.split('-'); return `${MESES_CURTO[parseInt(n)-1]}/${a}`; }
@@ -450,6 +513,26 @@ function nomeMesLongo(c) { const [a,n]=c.split('-'); return `${MESES_LONGO[parse
 function gerarId() { return 'x' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 function formatarData(iso) { if(!iso) return ''; const [a,m,d]=iso.split('-'); return `${d}/${m}`; }
 function hojeISO() { return new Date().toISOString().slice(0,10); }
+
+// ⭐ Ordena um array de pisos conforme ORDEM_PISOS.
+// Pisos fora da lista vão para o final em ordem alfabética.
+function ordenarPisos(pisos) {
+  return [...pisos].sort((a, b) => {
+    const idxA = ORDEM_PISOS.indexOf(a);
+    const idxB = ORDEM_PISOS.indexOf(b);
+    if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+    if (idxA !== -1) return -1;
+    if (idxB !== -1) return 1;
+    return a.localeCompare(b, 'pt-BR');
+  });
+}
+
+// ⭐ Retorna o primeiro piso na ordem correta para um dado mês
+function primeiroPisoDoMes(mes) {
+  const pisos = Object.keys(ESTADO.dados[mes] || {});
+  const ordenados = ordenarPisos(pisos);
+  return ordenados[0] || null;
+}
 
 function construirMesBase() {
   const mes = {};
@@ -478,6 +561,7 @@ const ESTADO = {
   dados: {},
   pronto: false
 };
+let mesOrigemCopia = null;
 let mesAnteriorDetectado = null;
 let lojaMenuAtual = null;
 let lojaMenuPiso = null;
@@ -501,11 +585,13 @@ btnLogin.addEventListener('click', async () => {
     await signInWithEmailAndPassword(auth, email, senha);
   } catch (e) {
     const msgs = {
-      'auth/invalid-email': 'E-mail inválido.', 'auth/user-not-found': 'Usuário não encontrado.',
-      'auth/wrong-password': 'Senha incorreta.', 'auth/invalid-credential': 'E-mail ou senha incorretos.',
+      'auth/invalid-email': 'E-mail inválido.',
+      'auth/user-not-found': 'Usuário não encontrado.',
+      'auth/wrong-password': 'Senha incorreta.',
+      'auth/invalid-credential': 'E-mail ou senha incorretos.',
       'auth/too-many-requests': 'Muitas tentativas. Tente em alguns minutos.',
       'auth/network-request-failed': 'Sem conexão com a internet.',
-      'auth/api-key-not-valid.-please-pass-a-valid-api-key.': '⚠️ API Key inválida. Substitua o firebaseConfig no código.'
+      'auth/api-key-not-valid.-please-pass-a-valid-api-key.': '⚠️ API Key inválida.'
     };
     mostrarErroLogin(msgs[e.code] || 'Erro: ' + e.message);
   } finally { btnLogin.disabled = false; btnLogin.textContent = 'Entrar'; }
@@ -548,7 +634,6 @@ async function carregarDados() {
       await salvarDados(true);
     }
 
-    // Garante que todos os meses têm todos os pisos do roteiro base
     Object.keys(ESTADO.dados).forEach(mes => {
       Object.keys(ROTEIRO_BASE).forEach(piso => {
         if (!ESTADO.dados[mes][piso]) {
@@ -559,11 +644,9 @@ async function carregarDados() {
       });
     });
 
-    // 🎯 MÊS INICIAL INTELIGENTE (vistoria retroativa)
     const mesAtual = mesAtualChave();
     const mesAnterior = mesAnteriorChave(mesAtual);
 
-    // Garante que o mês atual existe (mesmo vazio) para checar
     if (!ESTADO.dados[mesAtual]) {
       ESTADO.dados[mesAtual] = construirMesBase();
     }
@@ -575,14 +658,13 @@ async function carregarDados() {
     const anteriorTemDados = dadosMesAnterior && Object.values(dadosMesAnterior).flat().length > 0;
 
     if (!atualTemVistoria && anteriorTemDados) {
-      // Abre automaticamente no mês anterior (vistoria retroativa)
       ESTADO.mesSelecionado = mesAnterior;
-      mostrarSync(`Abrindo em ${nomeMesCurto(mesAnterior)} (vistoria retroativa)`);
+      mostrarSync(`Abrindo em ${nomeMesCurto(mesAnterior)}`);
     } else {
       ESTADO.mesSelecionado = mesAtual;
     }
 
-    ESTADO.pisoSelecionado = Object.keys(ESTADO.dados[ESTADO.mesSelecionado])[0];
+    ESTADO.pisoSelecionado = primeiroPisoDoMes(ESTADO.mesSelecionado);
     renderizarTudo();
   } catch (e) {
     console.error("Erro ao carregar:", e);
@@ -591,14 +673,14 @@ async function carregarDados() {
       ESTADO.dados = JSON.parse(local);
       const mes = ESTADO.mesSelecionado;
       if (ESTADO.dados[mes]) {
-        ESTADO.pisoSelecionado = Object.keys(ESTADO.dados[mes])[0];
+        ESTADO.pisoSelecionado = primeiroPisoDoMes(mes);
       } else {
         const primeiroMes = Object.keys(ESTADO.dados).sort().reverse()[0];
         ESTADO.mesSelecionado = primeiroMes;
-        ESTADO.pisoSelecionado = Object.keys(ESTADO.dados[primeiroMes])[0];
+        ESTADO.pisoSelecionado = primeiroPisoDoMes(primeiroMes);
       }
       renderizarTudo();
-      mostrarSync('Modo offline (cache local)', true);
+      mostrarSync('Modo offline', true);
     } else { alert('Erro ao carregar: ' + e.message); }
   }
 }
@@ -617,9 +699,11 @@ async function salvarDados(silencioso = false) {
 
 function mostrarSync(msg, erro = false) {
   const el = document.getElementById('syncStatus');
-  el.textContent = msg; el.classList.toggle('erro', erro); el.classList.add('show');
+  el.textContent = msg;
+  el.classList.toggle('erro', erro);
+  el.classList.add('show');
   clearTimeout(salvandoTimeout);
-  salvandoTimeout = setTimeout(() => el.classList.remove('show'), 2000);
+  salvandoTimeout = setTimeout(() => el.classList.remove('show'), 1800);
 }
 
 // ============================================================
@@ -640,7 +724,11 @@ function atualizarBadgeMes() {
 function renderizarPisos() {
   const nav = document.getElementById('floorNav');
   nav.innerHTML = '';
-  Object.keys(ESTADO.dados[ESTADO.mesSelecionado] || {}).forEach(piso => {
+
+  const pisosExistentes = Object.keys(ESTADO.dados[ESTADO.mesSelecionado] || {});
+  const pisosOrdenados = ordenarPisos(pisosExistentes);
+
+  pisosOrdenados.forEach(piso => {
     const lojas = ESTADO.dados[ESTADO.mesSelecionado][piso] || [];
     const pendentes = lojas.filter(l => l.status === 'pendente').length;
     const btn = document.createElement('button');
@@ -667,7 +755,12 @@ function renderizarLojas() {
   } else { resumo.textContent = ''; }
 
   if (lojas.length === 0) {
-    lista.innerHTML = `<div class="empty-state"><div class="icon">🏬</div><div>Nenhuma loja neste piso</div></div>`;
+    lista.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">🏬</div>
+        <div class="title">Nenhuma loja neste piso</div>
+        <div class="desc">Use o botão + para adicionar</div>
+      </div>`;
     return;
   }
 
@@ -725,7 +818,7 @@ async function marcarStatus(lojaId, novoStatus, cardEl) {
 
   cardEl.dataset.status = statusFinal;
   cardEl.classList.add('saved');
-  setTimeout(() => cardEl.classList.remove('saved'), 600);
+  setTimeout(() => cardEl.classList.remove('saved'), 700);
 
   cardEl.querySelectorAll('.status-btn').forEach(b => {
     b.classList.toggle('selected', b.dataset.value === statusFinal);
@@ -816,7 +909,7 @@ async function salvarObservacao() {
 }
 
 // ============================================================
-// MENU DE AÇÕES
+// MENU
 // ============================================================
 function abrirMenu(lojaId) {
   const piso = ESTADO.pisoSelecionado;
@@ -854,7 +947,12 @@ function verHistoricoLoja() {
     `${ocorrencias.length} registro(s) em ${Object.keys(ESTADO.dados).length} mês(es)`;
 
   if (ocorrencias.length === 0) {
-    document.getElementById('histBody').innerHTML = `<div class="empty-state"><div class="icon">📭</div><div>Nenhum registro encontrado</div></div>`;
+    document.getElementById('histBody').innerHTML = `
+      <div class="empty-state">
+        <div class="icon">📭</div>
+        <div class="title">Sem registros</div>
+        <div class="desc">Nenhuma vistoria encontrada</div>
+      </div>`;
     fecharSheets();
     setTimeout(() => abrirSheet('sheetHistorico'), 350);
     return;
@@ -887,7 +985,7 @@ function verHistoricoLoja() {
 }
 
 // ============================================================
-// EDITAR / LIMPAR / EXCLUIR
+// EDITAR / LIMPAR / EXCLUIR LOJA
 // ============================================================
 function editarNome() {
   if (!lojaMenuAtual) return;
@@ -922,7 +1020,7 @@ async function limparStatusLoja() {
 
 async function excluirLojaDoMes() {
   if (!lojaMenuAtual) return;
-  if (!confirm(`Excluir "${lojaMenuAtual.nome}" do roteiro DESTE mês?\n\nIsso NÃO afeta os outros meses.`)) return;
+  if (!confirm(`Excluir "${lojaMenuAtual.nome}" do roteiro DESTE mês?`)) return;
   const piso = lojaMenuPiso || ESTADO.pisoSelecionado;
   const arr = ESTADO.dados[ESTADO.mesSelecionado][piso];
   const idx = arr.findIndex(l => l.id === lojaMenuAtual.id);
@@ -940,7 +1038,8 @@ async function excluirLojaDoMes() {
 function abrirAdicionar() {
   const selectPiso = document.getElementById('addPiso');
   selectPiso.innerHTML = '';
-  Object.keys(ESTADO.dados[ESTADO.mesSelecionado]).forEach(piso => {
+  const pisosOrdenados = ordenarPisos(Object.keys(ESTADO.dados[ESTADO.mesSelecionado]));
+  pisosOrdenados.forEach(piso => {
     const opt = document.createElement('option');
     opt.value = piso; opt.textContent = piso;
     if (piso === ESTADO.pisoSelecionado) opt.selected = true;
@@ -1019,20 +1118,71 @@ async function confirmarMes() {
     mostrarSync('Novo mês criado');
   }
   ESTADO.mesSelecionado = novo;
-  ESTADO.pisoSelecionado = Object.keys(ESTADO.dados[novo])[0];
+  ESTADO.pisoSelecionado = primeiroPisoDoMes(novo);
   fecharSheets();
   renderizarTudo();
   await salvarDados();
 }
 
 async function resetarRoteiroMes() {
-  if (!confirm(`Isso vai SUBSTITUIR o roteiro de ${nomeMesCurto(ESTADO.mesSelecionado)} pelo roteiro base original.\n\nTodas as vistorias deste mês serão perdidas.\n\nContinuar?`)) return;
+  if (!confirm(`Isso vai SUBSTITUIR o roteiro de ${nomeMesCurto(ESTADO.mesSelecionado)}.\n\nTodas as vistorias deste mês serão perdidas.\n\nContinuar?`)) return;
   ESTADO.dados[ESTADO.mesSelecionado] = construirMesBase();
-  ESTADO.pisoSelecionado = Object.keys(ESTADO.dados[ESTADO.mesSelecionado])[0];
+  ESTADO.pisoSelecionado = primeiroPisoDoMes(ESTADO.mesSelecionado);
   fecharSheets();
   renderizarTudo();
   await salvarDados();
   alert('✅ Roteiro resetado.');
+}
+
+// ============================================================
+// EXCLUIR MÊS INTEIRO
+// ============================================================
+async function excluirMes() {
+  const mes = ESTADO.mesSelecionado;
+  const totalMeses = Object.keys(ESTADO.dados).length;
+
+  if (totalMeses <= 1) {
+    alert('Não é possível excluir o único mês existente.\n\nCrie outro mês primeiro para poder excluir este.');
+    return;
+  }
+
+  const lojas = Object.values(ESTADO.dados[mes] || {}).flat();
+  const total = lojas.length;
+  const feitas = lojas.filter(l => l.status !== 'pendente').length;
+
+  const primeiraConfirmacao = confirm(
+    `⚠️ EXCLUIR MÊS INTEIRO\n\n` +
+    `Mês: ${nomeMesLongo(mes)}\n` +
+    `Lojas: ${total}\n` +
+    `Vistoriadas: ${feitas}\n\n` +
+    `Esta ação NÃO PODE ser desfeita.\n\n` +
+    `Deseja continuar?`
+  );
+  if (!primeiraConfirmacao) return;
+
+  const mesTexto = nomeMesCurto(mes);
+  const segundaConfirmacao = prompt(
+    `Para confirmar, digite exatamente:\n\n${mesTexto}\n\n` +
+    `(a maiúscula/minúscula importa)`
+  );
+
+  if (segundaConfirmacao !== mesTexto) {
+    alert('Nome do mês não confere. Ação cancelada.');
+    return;
+  }
+
+  delete ESTADO.dados[mes];
+
+  const mesesRestantes = Object.keys(ESTADO.dados).sort().reverse();
+  ESTADO.mesSelecionado = mesesRestantes[0];
+  ESTADO.pisoSelecionado = primeiroPisoDoMes(ESTADO.mesSelecionado);
+
+  fecharSheets();
+  renderizarTudo();
+  await salvarDados();
+
+  mostrarSync('✓ Mês excluído');
+  setTimeout(() => alert(`✅ ${nomeMesLongo(mes)} foi excluído.\n\nNavegando para ${nomeMesLongo(ESTADO.mesSelecionado)}.`), 200);
 }
 
 // ============================================================
@@ -1052,15 +1202,7 @@ function exportarCSV() {
   }
 
   const linhas = [];
-  linhas.push([
-    'Piso',
-    'Loja',
-    'Status Anterior',
-    'Status Atual',
-    'Mudou?',
-    'Observação',
-    'Data Vistoria'
-  ].join(';'));
+  linhas.push(['Piso','Loja','Status Anterior','Status Atual','Mudou?','Observação','Data Vistoria'].join(';'));
 
   const todas = [];
   Object.keys(ESTADO.dados[mesAtual]).forEach(piso => {
@@ -1095,12 +1237,9 @@ function exportarCSV() {
     const sanitize = (txt) => `"${String(txt || '').replace(/"/g, '""')}"`;
 
     linhas.push([
-      sanitize(loja.piso),
-      sanitize(loja.nome),
-      sanitize(labelAnt),
-      sanitize(labelAtual),
-      sanitize(flagMudanca),
-      sanitize(loja.obs || ''),
+      sanitize(loja.piso), sanitize(loja.nome),
+      sanitize(labelAnt), sanitize(labelAtual),
+      sanitize(flagMudanca), sanitize(loja.obs || ''),
       sanitize(loja.data ? formatarData(loja.data) : '')
     ].join(';'));
   });
@@ -1117,7 +1256,6 @@ function exportarCSV() {
   linhas.push(`Mudanças em relação ao mês anterior: ${totalMudancas}`);
 
   const csvContent = '\uFEFF' + linhas.join('\n');
-
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1143,10 +1281,13 @@ function verificarMesAnterior() {
   const banner = document.getElementById('copyBanner');
   banner.classList.remove('show');
   if (sessionStorage.getItem('copia_ignorada_' + ESTADO.mesSelecionado)) return;
+
   const lojasAtuais = Object.values(ESTADO.dados[ESTADO.mesSelecionado] || {}).flat();
   if (lojasAtuais.some(l => l.status !== 'pendente')) return;
+
   const anterior = encontrarMesAnterior();
   if (!anterior) return;
+
   mesAnteriorDetectado = anterior;
   const lojasAnt = Object.values(ESTADO.dados[anterior]).flat();
   const abertas = lojasAnt.filter(l => l.status === 'aberta').length;
@@ -1165,20 +1306,71 @@ function ignorarCopia() {
   sessionStorage.setItem('copia_ignorada_' + ESTADO.mesSelecionado, '1');
 }
 
+function abrirEscolherCopia() {
+  const container = document.getElementById('escolherOrigemBody');
+  const meses = Object.keys(ESTADO.dados).sort().reverse();
+
+  if (meses.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="icon">📭</div><div class="title">Nenhum mês salvo</div></div>`;
+    fecharSheets();
+    setTimeout(() => abrirSheet('sheetEscolherOrigem'), 350);
+    return;
+  }
+
+  let html = '<div class="form-label">De qual mês deseja copiar o roteiro?</div>';
+  meses.forEach(m => {
+    const lojas = Object.values(ESTADO.dados[m]).flat();
+    const feitas = lojas.filter(l => l.status !== 'pendente').length;
+    const ehMesmo = m === ESTADO.mesSelecionado;
+    const sel = ehMesmo ? ' selecionado' : '';
+    const disabled = ehMesmo ? 'style="opacity:0.4;pointer-events:none;"' : '';
+    html += `<div class="mes-lista-item${sel}" ${disabled} onclick="escolherOrigemCopia('${m}')">
+      <span class="resumo-label">${nomeMesCurto(m)} ${ehMesmo ? '(atual)' : ''}</span>
+      <span class="resumo-valor">${feitas}/${lojas.length} vistoriadas</span>
+    </div>`;
+  });
+
+  container.innerHTML = html;
+  fecharSheets();
+  setTimeout(() => abrirSheet('sheetEscolherOrigem'), 350);
+}
+
+function escolherOrigemCopia(mesOrigem) {
+  mesOrigemCopia = mesOrigem;
+  mesAnteriorDetectado = mesOrigem;
+  fecharSheets();
+  setTimeout(() => abrirResumoCopia(), 350);
+}
+
 function abrirResumoCopia() {
   if (!mesAnteriorDetectado) return;
-  const anterior = mesAnteriorDetectado;
+  const origem = mesAnteriorDetectado;
   document.getElementById('resumoSubtitulo').textContent =
-    `De ${nomeMesLongo(anterior)} para ${nomeMesLongo(ESTADO.mesSelecionado)}`;
-  const lojasAnt = ESTADO.dados[anterior];
+    `De ${nomeMesLongo(origem)} para ${nomeMesLongo(ESTADO.mesSelecionado)}`;
+
+  const lojasOrigem = ESTADO.dados[origem];
   let html = '';
-  const totalAnt = Object.values(lojasAnt).flat().length;
+  const todasOrigem = Object.values(lojasOrigem).flat();
+  const total = todasOrigem.length;
+
+  const abertas = todasOrigem.filter(l => l.status === 'aberta').length;
+  const fechadas = todasOrigem.filter(l => l.status === 'fechada').length;
+  const tapumes = todasOrigem.filter(l => l.status === 'tapume').length;
+  const novas = todasOrigem.filter(l => l.status === 'nova').length;
+  const pendentes = todasOrigem.filter(l => l.status === 'pendente').length;
+
   html += `<div class="resumo-destaque">
-    <strong>Será copiado:</strong> nome e piso de <strong>${totalAnt} lojas</strong><br>
-    <strong>Será resetado:</strong> status, observações e datas
+    <strong>O que será copiado:</strong><br>
+    • Nome, piso e <strong>status atual</strong> de <strong>${total} lojas</strong><br>
+    • Observações também serão mantidas<br><br>
+    <strong>O que será resetado:</strong><br>
+    • Apenas a data da vistoria (para você registrar novamente)<br><br>
+    <strong>Status que virão:</strong><br>
+    ✅ ${abertas} abertas · ❌ ${fechadas} fechadas · 🚧 ${tapumes} tapumes · 🆕 ${novas} novas · ⏳ ${pendentes} pendentes
   </div>`;
-  Object.keys(lojasAnt).forEach(piso => {
-    const lojas = lojasAnt[piso];
+
+  Object.keys(lojasOrigem).forEach(piso => {
+    const lojas = lojasOrigem[piso];
     html += `<div class="form-label" style="margin-top:16px;">${piso} — ${lojas.length} loja(s)</div>`;
     lojas.slice(0, 5).forEach(l => {
       const st = STATUS_MAP[l.status];
@@ -1187,32 +1379,41 @@ function abrirResumoCopia() {
         <span class="resumo-valor">${st ? st.ico + ' ' + st.label : '⏳ Pendente'}</span>
       </div>`;
     });
-    if (lojas.length > 5) html += `<div class="resumo-item" style="justify-content:center;color:var(--gray);font-style:italic;">+ ${lojas.length - 5} loja(s)...</div>`;
+    if (lojas.length > 5) html += `<div class="resumo-item" style="justify-content:center;color:var(--text-muted);font-style:italic;">+ ${lojas.length - 5} loja(s)...</div>`;
   });
+
   document.getElementById('resumoBody').innerHTML = html;
   abrirSheet('sheetResumoCopia');
 }
 
 async function confirmarCopia() {
   if (!mesAnteriorDetectado) return;
-  const anterior = mesAnteriorDetectado;
+  const origem = mesAnteriorDetectado;
   const atual = ESTADO.mesSelecionado;
-  const dadosAnterior = ESTADO.dados[anterior];
+  const dadosOrigem = ESTADO.dados[origem];
   const novoMes = {};
-  Object.keys(dadosAnterior).forEach(piso => {
-    novoMes[piso] = dadosAnterior[piso].map(loja => ({
-      id: gerarId(), nome: loja.nome,
-      status: 'pendente', obs: '', data: ''
+
+  Object.keys(dadosOrigem).forEach(piso => {
+    novoMes[piso] = dadosOrigem[piso].map(loja => ({
+      id: gerarId(),
+      nome: loja.nome,
+      status: loja.status,   // ⭐ mantém o status do mês de origem
+      obs: loja.obs || '',   // ⭐ mantém a observação
+      data: ''               // limpa a data (nova vistoria)
     }));
   });
+
   ESTADO.dados[atual] = novoMes;
-  ESTADO.pisoSelecionado = Object.keys(novoMes)[0];
+  ESTADO.pisoSelecionado = primeiroPisoDoMes(atual);
+
   fecharSheets();
   document.getElementById('copyBanner').classList.remove('show');
   renderizarTudo();
   await salvarDados();
+
   const total = Object.values(novoMes).flat().length;
-  setTimeout(() => alert(`✅ Roteiro copiado! ${total} lojas carregadas.`), 150);
+  mesOrigemCopia = null;
+  setTimeout(() => alert(`✅ Roteiro copiado de ${nomeMesLongo(origem)}!\n\n${total} lojas carregadas em ${nomeMesLongo(atual)}, com os status do mês anterior.`), 150);
 }
 
 // ============================================================
@@ -1238,6 +1439,9 @@ window.limparStatusLoja = limparStatusLoja;
 window.excluirLojaDoMes = excluirLojaDoMes;
 window.verHistoricoLoja = verHistoricoLoja;
 window.exportarCSV = exportarCSV;
+window.abrirEscolherCopia = abrirEscolherCopia;
+window.escolherOrigemCopia = escolherOrigemCopia;
+window.excluirMes = excluirMes;
 </script>
 </body>
 </html>
