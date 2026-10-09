@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#1e3a8a">
+<title>Vistoria Shopping</title>
+<style>
+  :root {
+    --primary: #1e3a8a; --primary-light: #3b82f6; --success: #16a34a;
+    --warning: #f59e0b; --danger: #dc2626; --gray: #64748b;
+    --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --border: #e2e8f0;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); font-size: 16px; overscroll-behavior-y: contain; }
+
+  /* LOGIN */
+  .login-screen { position: fixed; inset: 0; z-index: 500; background: linear-gradient(160deg, #1e3a8a, #3b82f6); display: flex; align-items: center; justify-content: center; padding: 24px; padding-top: calc(24px + env(safe-area-inset-top)); padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+  .login-screen.hidden { display: none; }
+  .login-card { background: white; border-radius: 20px; padding: 28px 24px; width: 100%; max-width: 380px; box-shadow: 0 20px 50px rgba(0,0,0,0.25); }
+  .login-logo { width: 64px; height: 64px; border-radius: 16px; background: #eff6ff; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 16px; }
+  .login-title { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 4px; }
+  .login-subtitle { font-size: 13px; color: var(--gray); text-align: center; margin-bottom: 24px; }
+  .login-error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 10px; padding: 10px 12px; font-size: 13px; margin-bottom: 12px; display: none; line-height: 1.4; }
+  .login-error.show { display: block; }
+
+  /* HEADER */
+  header { position: sticky; top: 0; z-index: 100; background: var(--primary); color: white; padding: 12px 16px; padding-top: calc(12px + env(safe-area-inset-top)); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .header-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .header-title { font-size: 17px; font-weight: 600; }
+  .header-subtitle { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+  .header-right { display: flex; align-items: center; gap: 8px; }
+  .month-badge { background: rgba(255,255,255,0.2); padding: 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; white-space: nowrap; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+  .month-badge:active { background: rgba(255,255,255,0.35); }
+  .logout-btn { background: rgba(255,255,255,0.15); border: none; color: white; padding: 6px 8px; border-radius: 20px; font-size: 14px; cursor: pointer; }
+  .progress-bar { height: 4px; background: rgba(255,255,255,0.2); margin-top: 10px; border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #22c55e; width: 0%; transition: width 0.3s ease; }
+
+  /* NAVEGAÇÃO DE PISO */
+  .floor-nav { display: flex; gap: 8px; padding: 12px 16px; overflow-x: auto; background: white; border-bottom: 1px solid var(--border); position: sticky; top: 78px; z-index: 90; scrollbar-width: none; }
+  .floor-nav::-webkit-scrollbar { display: none; }
+  .floor-btn { flex-shrink: 0; padding: 8px 16px; border-radius: 20px; border: 1.5px solid var(--border); background: white; color: var(--gray); font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+  .floor-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+  .floor-count { background: rgba(0,0,0,0.08); border-radius: 10px; padding: 1px 7px; font-size: 11px; }
+  .floor-btn.active .floor-count { background: rgba(255,255,255,0.25); }
+
+  /* LISTA DE LOJAS */
+  main { padding: 12px 16px 100px; padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+  .store-list { display: flex; flex-direction: column; gap: 10px; }
+  .store-card { background: var(--card); border-radius: var(--radius); padding: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border-left: 5px solid var(--border); transition: border-color 0.2s; }
+  .store-card[data-status="aberta"] { border-left-color: var(--success); }
+  .store-card[data-status="fechada"] { border-left-color: var(--danger); }
+  .store-card[data-status="tapume"] { border-left-color: var(--warning); }
+  .store-card[data-status="nova"] { border-left-color: var(--primary-light); }
+  .store-card[data-status="pendente"] { border-left-color: var(--gray); }
+  .store-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 12px; }
+  .store-name { flex: 1; font-size: 21px; font-weight: 700; color: var(--primary); line-height: 1.2; letter-spacing: -0.3px; word-break: break-word; }
+  .store-date { font-size: 11px; color: var(--gray); white-space: nowrap; padding-top: 4px; }
+
+  /* BOTÕES DE STATUS INLINE */
+  .status-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .status-btn { padding: 10px 4px; border: 1.5px solid var(--border); border-radius: 10px; background: white; font-size: 11px; font-weight: 600; color: var(--gray); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.15s; font-family: inherit; line-height: 1.1; min-height: 52px; }
+  .status-btn .ico { font-size: 18px; line-height: 1; }
+  .status-btn:active { transform: scale(0.95); }
+  .status-btn[data-value="aberta"].selected  { background: #dcfce7; border-color: var(--success); color: #15803d; }
+  .status-btn[data-value="fechada"].selected { background: #fee2e2; border-color: var(--danger); color: #b91c1c; }
+  .status-btn[data-value="tapume"].selected  { background: #fef3c7; border-color: var(--warning); color: #b45309; }
+  .status-btn[data-value="nova"].selected    { background: #dbeafe; border-color: var(--primary-light); color: #1d4ed8; }
+
+  .store-card.saved { animation: flashSaved 0.6s ease; }
+  @keyframes flashSaved { 0% { background: #f0fdf4; } 100% { background: var(--card); } }
+
+  .store-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); gap: 8px; }
+  .obs-btn { flex: 1; background: transparent; border: none; color: var(--gray); font-size: 12px; padding: 6px 4px; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 6px; font-family: inherit; min-width: 0; }
+  .obs-btn span.text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .obs-btn.has-obs { color: #1d4ed8; font-weight: 500; }
+  .menu-btn { background: transparent; border: none; color: var(--gray); font-size: 18px; padding: 4px 8px; cursor: pointer; border-radius: 6px; line-height: 1; }
+  .menu-btn:active { background: var(--bg); }
+
+  /* FAB */
+  .fab { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); width: 56px; height: 56px; border-radius: 50%; background: var(--primary); color: white; border: none; font-size: 24px; box-shadow: 0 4px 12px rgba(30,58,138,0.4); z-index: 50; display: flex; align-items: center; justify-content: center; }
+
+  /* SHEETS */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+  .overlay.open { opacity: 1; pointer-events: auto; }
+  .sheet { position: fixed; left: 0; right: 0; bottom: 0; background: white; border-radius: 20px 20px 0 0; z-index: 201; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1); max-height: 90vh; display: flex; flex-direction: column; padding-bottom: env(safe-area-inset-bottom); }
+  .sheet.open { transform: translateY(0); }
+  .sheet-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 10px auto 4px; }
+  .sheet-header { padding: 8px 20px 12px; border-bottom: 1px solid var(--border); }
+  .sheet-title { font-size: 18px; font-weight: 700; }
+  .sheet-subtitle { font-size: 13px; color: var(--gray); margin-top: 2px; }
+  .sheet-body { padding: 16px 20px; overflow-y: auto; flex: 1; }
+  .form-group { margin-bottom: 18px; }
+  .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--gray); margin-bottom: 8px; text-transform: uppercase; }
+  input, textarea, select { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 16px; font-family: inherit; background: white; color: var(--text); outline: none; transition: border-color 0.15s; }
+  input:focus, textarea:focus, select:focus { border-color: var(--primary-light); }
+  textarea { resize: vertical; min-height: 70px; }
+  .sheet-footer { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: white; }
+  .btn { flex: 1; padding: 14px; border-radius: 12px; border: none; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; }
+  .btn-secondary { background: var(--bg); color: var(--text); }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn:active { opacity: 0.85; }
+
+  .menu-item { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 10px; cursor: pointer; font-size: 15px; color: var(--text); transition: background 0.15s; }
+  .menu-item:active { background: var(--bg); }
+  .menu-item .emoji { font-size: 20px; width: 24px; text-align: center; }
+  .menu-item.danger { color: var(--danger); }
+
+  /* ESTADOS */
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--gray); }
+  .empty-state .icon { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
+  .section-title { font-size: 12px; font-weight: 700; color: var(--gray); text-transform: uppercase; margin: 4px 0 10px 4px; display: flex; justify-content: space-between; align-items: center; }
+  .section-title .resumo-inline { font-size: 10px; color: var(--gray); text-transform: none; letter-spacing: 0; font-weight: 500; }
+
+  /* CÓPIA */
+  .copy-banner { background: linear-gradient(135deg, #fef3c7, #fde68a); border: 1px solid #f59e0b; border-radius: var(--radius); padding: 14px; margin-bottom: 12px; display: none; }
+  .copy-banner.show { display: block; }
+  .copy-banner-title { font-size: 14px; font-weight: 700; color: #92400e; margin-bottom: 6px; }
+  .copy-banner-text { font-size: 13px; color: #78350f; margin-bottom: 12px; line-height: 1.4; }
+  .copy-banner-actions { display: flex; gap: 8px; }
+  .copy-banner-actions .btn { padding: 10px; font-size: 13px; }
+  .btn-copy { background: #f59e0b; color: white; }
+  .btn-ghost { background: rgba(255,255,255,0.6); color: #78350f; }
+  .resumo-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .resumo-item:last-child { border-bottom: none; }
+  .resumo-label { color: var(--gray); }
+  .resumo-valor { font-weight: 600; }
+  .resumo-destaque { background: #eff6ff; border-radius: 10px; padding: 12px; margin: 12px 0; font-size: 13px; color: #1e40af; line-height: 1.5; }
+  .mes-lista-item { cursor: pointer; padding: 12px; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+  .mes-lista-item.selecionado { border-color: #1e3a8a; background: #eff6ff; }
+
+  /* HISTÓRICO */
+  .hist-item { display: flex; gap: 12px; padding: 12px; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; align-items: flex-start; }
+  .hist-mes { background: var(--primary); color: white; border-radius: 8px; padding: 6px 10px; font-size: 12px; font-weight: 700; white-space: nowrap; min-width: 65px; text-align: center; }
+  .hist-info { flex: 1; min-width: 0; }
+  .hist-status { font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+  .hist-status.aberta  { color: #15803d; }
+  .hist-status.fechada { color: #b91c1c; }
+  .hist-status.tapume  { color: #b45309; }
+  .hist-status.nova    { color: #1d4ed8; }
+  .hist-status.pendente{ color: var(--gray); }
+  .hist-obs { font-size: 12px; color: var(--gray); line-height: 1.4; margin-top: 2px; }
+  .hist-data { font-size: 11px; color: var(--gray); margin-top: 4px; }
+
+  /* SYNC */
+  .sync-status { position: fixed; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); background: rgba(30,41,59,0.9); color: white; font-size: 11px; padding: 6px 12px; border-radius: 20px; z-index: 60; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+  .sync-status.show { opacity: 1; }
+  .sync-status.erro { background: rgba(220,38,38,0.95); }
+
+  .action-row { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+  .action-row .btn { padding: 12px; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">🏬</div>
+    <div class="login-title">Vistoria Shopping</div>
+    <div class="login-subtitle">Entre para acessar o roteiro</div>
+    <div class="login-error" id="loginError"></div>
+    <div class="form-group">
+      <label class="form-label" for="loginEmail">E-mail</label>
+      <input type="email" id="loginEmail" placeholder="seu@email.com" autocomplete="username" inputmode="email">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="loginSenha">Senha</label>
+      <input type="password" id="loginSenha" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn btn-primary" id="btnLogin" style="width:100%; margin-top:8px;">Entrar</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header id="appHeader" style="display:none;">
+  <div class="header-top">
+    <div>
+      <div class="header-title">Vistoria Mensal</div>
+      <div class="header-subtitle" id="usuarioEmail">—</div>
+    </div>
+    <div class="header-right">
+      <div class="month-badge" id="mesReferencia" onclick="abrirSeletorMes()">
+        <span id="mesReferenciaTexto">— / —</span>
+        <span class="arrow">▼</span>
+      </div>
+      <button class="logout-btn" id="btnLogout" title="Sair">⏻</button>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+</header>
+
+<!-- NAVEGAÇÃO DE PISOS -->
+<nav class="floor-nav" id="floorNav" style="display:none;"></nav>
+
+<!-- CONTEÚDO -->
+<main id="appMain" style="display:none;">
+  <div class="copy-banner" id="copyBanner">
+    <div class="copy-banner-title">📋 Roteiro do mês anterior disponível</div>
+    <div class="copy-banner-text" id="copyBannerText">Carregando...</div>
+    <div class="copy-banner-actions">
+      <button class="btn btn-ghost" onclick="ignorarCopia()">Ignorar</button>
+      <button class="btn btn-copy" onclick="abrirResumoCopia()">Copiar roteiro</button>
+    </div>
+  </div>
+  <div class="section-title">
+    <span id="sectionTitle">Lojas do piso</span>
+    <span class="resumo-inline" id="sectionResumo"></span>
+  </div>
+  <div class="store-list" id="storeList"></div>
+</main>
+
+<button class="fab" id="fabAdd" style="display:none;">+</button>
+<div class="overlay" id="overlay"></div>
+<div class="sync-status" id="syncStatus">Salvando...</div>
+
+<!-- SHEET: OBSERVAÇÃO -->
+<div class="sheet" id="sheetObs">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title" id="obsTitulo">Observação</div>
+    <div class="sheet-subtitle">Registre informações sobre esta loja</div>
+  </div>
+  <div class="sheet-body">
+    <input type="hidden" id="obsLojaId">
+    <div class="form-group">
+      <label class="form-label" for="obsTexto">Observação</label>
+      <textarea id="obsTexto" placeholder="Ex: Fechada para reforma, previsão de reabertura em março..." rows="5"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="obsData">Data da vistoria</label>
+      <input type="date" id="obsData">
+    </div>
+  </div>
+  <div class="sheet-footer">
+    <button class="btn btn-secondary" onclick="fecharSheets()">Cancelar</button>
+    <button class="btn btn-primary" id="btnSalvarObs">Salvar</button>
+  </div>
+</div>
+
+<!-- SHEET: MENU DE AÇÕES -->
+<div class="sheet" id="sheetMenu">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title" id="menuTitulo">Opções</div>
+    <div class="sheet-subtitle" id="menuSubtitulo">—</div>
+  </div>
+  <div class="sheet-body" style="padding: 8px 12px;">
+    <div class="menu-item" onclick="verHistoricoLoja()">
+      <span class="emoji">📅</span> Ver histórico desta loja
+    </div>
+    <div class="menu-item" onclick="editarNome()">
+      <span class="emoji">✏️</span> Editar nome da loja
+    </div>
+    <div class="menu-item" onclick="limparStatusLoja()">
+      <span class="emoji">↺</span> Limpar status (voltar a pendente)
+    </div>
+    <div class="menu-item danger" onclick="excluirLojaDoMes()">
+      <span class="emoji">🗑</span> Excluir do roteiro deste mês
+    </div>
+  </div>
+  <div class="sheet-footer">
+    <button class="btn btn-secondary" onclick="fecharSheets()">Fechar</button>
+  </div>
+</div>
+
+<!-- SHEET: HISTÓRICO -->
+<div class="sheet" id="sheetHistorico">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title" id="histTitulo">Histórico</div>
+    <div class="sheet-subtitle" id="histSubtitulo">—</div>
+  </div>
+  <div class="sheet-body" id="histBody"></div>
+  <div class="sheet-footer">
+    <button class="btn btn-secondary" onclick="fecharSheets()">Fechar</button>
+  </div>
+</div>
+
+<!-- SHEET: EDITAR NOME -->
+<div class="sheet" id="sheetEditar">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title">Editar loja</div>
+    <div class="sheet-subtitle">Alterar nome</div>
+  </div>
+  <div class="sheet-body">
+    <input type="hidden" id="editLojaId">
+    <div class="form-group">
+      <label class="form-label" for="editNome">Nome da loja</label>
+      <input type="text" id="editNome" placeholder="Ex: Renner / Vaga / Tapume">
+    </div>
+  </div>
+  <div class="sheet-footer">
+    <button class="btn btn-secondary" onclick="fecharSheets()">Cancelar</button>
+    <button class="btn btn-primary" id="btnSalvarEdit">Salvar</button>
+  </div>
+</div>
+
+<!-- SHEET: ADICIONAR LOJA -->
+<div class="sheet" id="sheetAdicionar">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <div class="sheet-title">Nova loja / vaga</div>
+    <div class="sheet-subtitle">Cadastrar no roteiro deste mês</div>
+  </div>
+  <div class="sheet-body">
+    <div class="form-group">
+      <label class="form-label" for="addNome">Nome da loja</label>
+      <input type="text" id="addNome" placeholder="Ex: Renner / Vaga / Tapume">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="addPiso">Piso</label>
+      <select id="addPiso"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="addStatus">Status inicial</label>
+      <select id="addStatus">
+        <option value="nova">Nova loja</option>
+        <option value="aberta">Aberta</option>
+        <option value="fechada">Fechada</option>
+        <option value="tapume">Tapume</option>
+      </select>
+    </div>
+  </div>
+  <div class="sheet-footer">
+    <button class="btn btn-secondary" onclick="fecharSheets()">Cancelar</button>
+    <button class="btn btn-primary" id="btnSalvarAdd">Adicionar</button>
+  </div>
+</div>
+
+<!-- SHEET: SELETOR DE MÊS -->
+<div class="sheet" id="sheetMes">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header"><div class="sheet-title">Selecionar mês</div><div class="sheet-subtitle">Navegue entre vistorias</div></div>
+  <div class="sheet-body">
+    <div class="form-group"><label class="form-label">Mês / ano</label><input type="month" id="inputMes"></div>
+    <div id="listaMesesExistentes"></div>
+    <div class="action-row">
+      <button class="btn btn-secondary" onclick="abrirNovaVistoria()">🆕 Nova vistoria (mês anterior)</button>
+      <button class="btn btn-secondary" onclick="exportarCSV()">📊 Exportar CSV (mudanças do mês)</button>
+      <button class="btn btn-secondary" onclick="resetarRoteiroMes()">🔄 Resetar roteiro deste mês</button>
+    </div>
+  </div>
+  <div class="sheet-footer">
+    <button class="btn btn-secondary" onclick="fecharSheets()">Cancelar</button>
+    <button class="btn btn-primary" onclick="confirmarMes()">Ir para o mês</button>
+  </div>
+</div>
+
+<!-- SHEET: RESUMO DA CÓPIA -->
+<div class="sheet" id="sheetResumoCopia">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header"><div class="sheet-title">Resumo da cópia</div><div class="sheet-subtitle" id="resumoSubtitulo">—</div></div>
+  <div class="sheet-body" id="resumoBody"></div>
+  <div class="sheet-footer">
+    <button class="btn btn-secondary" onclick="fecharSheets()">Cancelar</button>
+    <button class="btn btn-primary" onclick="confirmarCopia()">Confirmar cópia</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ============================================================
+// CONFIGURAÇÃO FIREBASE (SUBSTITUA pelos seus dados!)
+// ============================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyA5o8k3tOuNqlvNgx0n7R3NJEPqW41dN-c",
+  authDomain: "competitive-market-analysis.firebaseapp.com",
+  projectId: "competitive-market-analysis",
+  storageBucket: "competitive-market-analysis.firebasestorage.app",
+  messagingSenderId: "292655933317",
+  appId: "1:292655933317:web:e33c18afcb55fc5d5846ec"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const DOC_REF = doc(db, 'vistorias', 'shoppingCenter');
+
+// ============================================================
+// ROTEIRO BASE
+// ============================================================
+const ROTEIRO_BASE = {
+  "Térreo": [
+    'Narciso Enxovais','Vaga','Americanas','Universo dos Games','Zumaz','Criativa Brinquedos',
+    'Johnny Joy','Bella VIP','Centro Cell','Fri-Sabor','Coffee Shop São Braz','Vaga','Timbushop','Colchões Castor',
+    'Farmácia Santa Maria','First Class','Claro','Rommanel','Browbar / Depilway','CVC','JDL Celulares','Chiquinho Sorvetes',
+    'Vaga','Le Biscuit','Vivo','Bessie Beauty Club','Mundo das Vitaminas','Centauro','Vonny Cosméticos','Vaga','Vaga','Vaga','Vaga','Vaga',
+    'Casa do Celular','Íris Semijoias','Reparus','Laser Eletro','Aliança Colchões','G&E Acessórios','Unigames','Ótica Liberty',
+    'Zeiss','Ótica Líder','Colchões Ortobom','Tim','Ótica Chilli Beans','Espaço Laser','World Technology','Vaga','Vaga',
+    'Óticas Carol','Drogaria São Paulo','Mundo do Cabeleireiro','Oculum','Mundo do Cabeleireiro','Linda Semijoias e Acessórios','SOS Relógios',
+    'Lajoya','Club da Miçanga & Cia da Montagem','Millena Móveis','World Tennis','Vaga','Vaga'
+  ],
+  "L1": [
+    'Riachuelo','Vaga','Vaga Oficina de Slimes','Vaga Oficina de Slimes','Kid Stok','Danilas Semijoias','C&A','Vaga','Ótica Capibaribe',
+    'Prata Rara','Vaga','Vaga','Diva','Nel Blu','Farmácia Pague Menos','La Camiceria','Taco','Vaga','Vaga','Vaga','Vaga','Vaga','Vaga','Vaga',
+    'Kalunga','Espaço Massagem - Pop Up','Magazine Luiza','Esposende','Avenida','Vaga','Renner','Curinga Celular','Duobrow - Studio de Beleza',
+    'Figueiras Calçados','Vaga','Vaga','Vaga','Vaga','Mundo Verde','Banco Bradesco','Cama Decor','Top Plush','Vaga','Vaga','Vaga','Vaga','Cia do Terno','Via Stillus',
+    'Di Santinni','Cristine','Vaga','Soff','Vagamundo','Vaga','Polo Club England','All Pé','Via Laser','Vaga','Vaga','Pharmapele','Vaga',
+    'Diorne','Natura','Usaflex','Dwz','Lupo','Boticário','IPlace Mobile','Blanche','Spuk','Clube Melissa','Vivara',"Rota's Makeup",'Vaga',
+    'Arena Fit','Hering','Vaga','Tropical','Di Farias Atelier','Lets Make','Mr. Black Café','Vaga'
+  ],
+  "L2": [
+    'Riachuelo','Espaço Olinda','Vaga','Vaga','C&A','Vaga','Vaga','Vaga','Nova Foco','Vaga','Vaga','Vaga','Cyclone','Sonho dos Pés','Constance',
+    'Santa Lolla','Via Mia','Via Sol','Vaga','Bagaggio','Divino Barbearia','Cacau Show','Cheirin Bão','Vaga','Studio Z','Caixa Econômica Federal',
+    'Ri Happy','Renner','Vaga','Salti Verso','Vaga','Vaga','San Paolo','Vaga','Dinossauro Discos','Vaga','Vaga - Import Brink','Vaga - Import Brink',
+    'Vaga - Import Brink','Vaga - Import Brink','Vaga - Import Brink','Vaga - Import Brink',
+    'Caixas Eletrônicos - Banco 24 Horas','Vaga','Vaga','Vaga','Vaga','Vaga','Vaga','Vaga','Arezzo','Belle Accessoires','Havaianas',
+    'Vaga','Bali','Espaço Cultural - Pop Up','Vaga','Damyller','Kinitos','Joan Shoes','Lalelilo','Estoque','Vaga','Seaway','Vaga',
+    'Vaga - Eu Amo Ler','Vaga - Eu Amo Ler','Vaga - Eu Amo Ler','Vaga - Eu Amo Ler','Kinitos','Vaga','Vaga','Morana','Mr. Cheney'
+  ],
+  "L3": [
+    'Livraria Leitura','Montana Airsoft','Tapume - Paço Real','Game Station','Smart Fit','Subway','Tapume - Mini Kalzone','Giraffas',
+    "Juliet's Doces e Salgados",'Don Pastello','Fred Chicken','Vaga','Mc Donalds','Cinépolis','Milky Moo','Julietto Festa','Donatário','KFC',
+    'Capilé','Redbake','Dinny','Tempero da Fazenda','Vaga','Vaga','Vaga',"Habib's",'Pastel Mania',"Bob's",'Iang Chao','Sal e Brasa',
+    'Burger King','Vaga','Vaga','Vaga'
+  ],
+  "L4": [
+    'Cinépolis Vip','Uninassau','Fight House','Vaga','Neoenergia','Wizard Brasil','Vaga','Vaga','Vaga','Vaccine','Accept Saúde',
+    'Espaço Massagem','Accept Saúde II','Expresso Cidadão','Esperança Consultório','Tapume - Cartório Rita Rangel','Boris Berenstein',
+    'Hope','Tapume - Studio Arquitetura Criativa','Nova Placa','Infinity Consumidor','Go Service','Vaga','Vaga','Vaga','Vaga'
+  ]
+};
+
+// ============================================================
+// UTILITÁRIOS DE DATA
+// ============================================================
+function mesAtualChave() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+
+function mesAnteriorChave(chave) {
+  const [ano, mes] = chave.split('-').map(Number);
+  const d = new Date(ano, mes - 2, 1);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+
+const MESES_CURTO = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const MESES_LONGO = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+function nomeMesCurto(c) { const [a,n]=c.split('-'); return `${MESES_CURTO[parseInt(n)-1]}/${a}`; }
+function nomeMesLongo(c) { const [a,n]=c.split('-'); return `${MESES_LONGO[parseInt(n)-1]} ${a}`; }
+function gerarId() { return 'x' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function formatarData(iso) { if(!iso) return ''; const [a,m,d]=iso.split('-'); return `${d}/${m}`; }
+function hojeISO() { return new Date().toISOString().slice(0,10); }
+
+function construirMesBase() {
+  const mes = {};
+  Object.keys(ROTEIRO_BASE).forEach(piso => {
+    mes[piso] = ROTEIRO_BASE[piso].map(nome => ({
+      id: gerarId(), nome, status: 'pendente', obs: '', data: ''
+    }));
+  });
+  return mes;
+}
+
+const STATUS_MAP = {
+  aberta:  { label: 'Aberta',  ico: '✅' },
+  fechada: { label: 'Fechada', ico: '❌' },
+  tapume:  { label: 'Tapume',  ico: '🚧' },
+  nova:    { label: 'Nova',    ico: '🆕' },
+  pendente:{ label: 'Pendente',ico: '⏳' }
+};
+
+// ============================================================
+// ESTADO
+// ============================================================
+const ESTADO = {
+  mesSelecionado: mesAtualChave(),
+  pisoSelecionado: null,
+  dados: {},
+  pronto: false
+};
+let mesAnteriorDetectado = null;
+let lojaMenuAtual = null;
+let lojaMenuPiso = null;
+let salvandoTimeout = null;
+
+// ============================================================
+// LOGIN
+// ============================================================
+const loginScreen = document.getElementById('loginScreen');
+const loginError = document.getElementById('loginError');
+const btnLogin = document.getElementById('btnLogin');
+function mostrarErroLogin(msg) { loginError.textContent = msg; loginError.classList.add('show'); }
+
+btnLogin.addEventListener('click', async () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  const senha = document.getElementById('loginSenha').value;
+  loginError.classList.remove('show');
+  if (!email || !senha) { mostrarErroLogin('Preencha e-mail e senha.'); return; }
+  btnLogin.disabled = true; btnLogin.textContent = 'Entrando...';
+  try {
+    await signInWithEmailAndPassword(auth, email, senha);
+  } catch (e) {
+    const msgs = {
+      'auth/invalid-email': 'E-mail inválido.', 'auth/user-not-found': 'Usuário não encontrado.',
+      'auth/wrong-password': 'Senha incorreta.', 'auth/invalid-credential': 'E-mail ou senha incorretos.',
+      'auth/too-many-requests': 'Muitas tentativas. Tente em alguns minutos.',
+      'auth/network-request-failed': 'Sem conexão com a internet.',
+      'auth/api-key-not-valid.-please-pass-a-valid-api-key.': '⚠️ API Key inválida. Substitua o firebaseConfig no código.'
+    };
+    mostrarErroLogin(msgs[e.code] || 'Erro: ' + e.message);
+  } finally { btnLogin.disabled = false; btnLogin.textContent = 'Entrar'; }
+});
+
+document.getElementById('loginSenha').addEventListener('keydown', e => { if (e.key === 'Enter') btnLogin.click(); });
+document.getElementById('btnLogout').addEventListener('click', async () => { if (confirm('Deseja sair?')) await signOut(auth); });
+
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    loginScreen.classList.add('hidden');
+    document.getElementById('appHeader').style.display = '';
+    document.getElementById('floorNav').style.display = '';
+    document.getElementById('appMain').style.display = '';
+    document.getElementById('fabAdd').style.display = '';
+    document.getElementById('usuarioEmail').textContent = user.email || 'Usuário';
+    if (!ESTADO.pronto) { await carregarDados(); ESTADO.pronto = true; }
+  } else {
+    loginScreen.classList.remove('hidden');
+    document.getElementById('appHeader').style.display = 'none';
+    document.getElementById('floorNav').style.display = 'none';
+    document.getElementById('appMain').style.display = 'none';
+    document.getElementById('fabAdd').style.display = 'none';
+    document.getElementById('loginSenha').value = '';
+    ESTADO.pronto = false;
+  }
+});
+
+// ============================================================
+// FIRESTORE
+// ============================================================
+async function carregarDados() {
+  try {
+    const snap = await getDoc(DOC_REF);
+    if (snap.exists()) {
+      ESTADO.dados = snap.data() || {};
+    } else {
+      ESTADO.dados = {};
+      ESTADO.dados[ESTADO.mesSelecionado] = construirMesBase();
+      await salvarDados(true);
+    }
+
+    // Garante que todos os meses têm todos os pisos do roteiro base
+    Object.keys(ESTADO.dados).forEach(mes => {
+      Object.keys(ROTEIRO_BASE).forEach(piso => {
+        if (!ESTADO.dados[mes][piso]) {
+          ESTADO.dados[mes][piso] = ROTEIRO_BASE[piso].map(nome => ({
+            id: gerarId(), nome, status: 'pendente', obs: '', data: ''
+          }));
+        }
+      });
+    });
+
+    // 🎯 MÊS INICIAL INTELIGENTE (vistoria retroativa)
+    const mesAtual = mesAtualChave();
+    const mesAnterior = mesAnteriorChave(mesAtual);
+
+    // Garante que o mês atual existe (mesmo vazio) para checar
+    if (!ESTADO.dados[mesAtual]) {
+      ESTADO.dados[mesAtual] = construirMesBase();
+    }
+
+    const lojasDoMesAtual = Object.values(ESTADO.dados[mesAtual]).flat();
+    const atualTemVistoria = lojasDoMesAtual.some(l => l.status !== 'pendente');
+
+    const dadosMesAnterior = ESTADO.dados[mesAnterior];
+    const anteriorTemDados = dadosMesAnterior && Object.values(dadosMesAnterior).flat().length > 0;
+
+    if (!atualTemVistoria && anteriorTemDados) {
+      // Abre automaticamente no mês anterior (vistoria retroativa)
+      ESTADO.mesSelecionado = mesAnterior;
+      mostrarSync(`Abrindo em ${nomeMesCurto(mesAnterior)} (vistoria retroativa)`);
+    } else {
+      ESTADO.mesSelecionado = mesAtual;
+    }
+
+    ESTADO.pisoSelecionado = Object.keys(ESTADO.dados[ESTADO.mesSelecionado])[0];
+    renderizarTudo();
+  } catch (e) {
+    console.error("Erro ao carregar:", e);
+    const local = localStorage.getItem('vistoria_cache');
+    if (local) {
+      ESTADO.dados = JSON.parse(local);
+      const mes = ESTADO.mesSelecionado;
+      if (ESTADO.dados[mes]) {
+        ESTADO.pisoSelecionado = Object.keys(ESTADO.dados[mes])[0];
+      } else {
+        const primeiroMes = Object.keys(ESTADO.dados).sort().reverse()[0];
+        ESTADO.mesSelecionado = primeiroMes;
+        ESTADO.pisoSelecionado = Object.keys(ESTADO.dados[primeiroMes])[0];
+      }
+      renderizarTudo();
+      mostrarSync('Modo offline (cache local)', true);
+    } else { alert('Erro ao carregar: ' + e.message); }
+  }
+}
+
+async function salvarDados(silencioso = false) {
+  localStorage.setItem('vistoria_cache', JSON.stringify(ESTADO.dados));
+  if (!silencioso) mostrarSync('Salvando...');
+  try {
+    await setDoc(DOC_REF, ESTADO.dados);
+    if (!silencioso) mostrarSync('✓ Salvo');
+  } catch (e) {
+    console.error("Erro ao salvar:", e);
+    mostrarSync('Erro ao salvar', true);
+  }
+}
+
+function mostrarSync(msg, erro = false) {
+  const el = document.getElementById('syncStatus');
+  el.textContent = msg; el.classList.toggle('erro', erro); el.classList.add('show');
+  clearTimeout(salvandoTimeout);
+  salvandoTimeout = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+// ============================================================
+// RENDERIZAÇÃO
+// ============================================================
+function renderizarTudo() {
+  atualizarBadgeMes();
+  renderizarPisos();
+  renderizarLojas();
+  atualizarProgresso();
+  verificarMesAnterior();
+}
+
+function atualizarBadgeMes() {
+  document.getElementById('mesReferenciaTexto').textContent = nomeMesCurto(ESTADO.mesSelecionado);
+}
+
+function renderizarPisos() {
+  const nav = document.getElementById('floorNav');
+  nav.innerHTML = '';
+  Object.keys(ESTADO.dados[ESTADO.mesSelecionado] || {}).forEach(piso => {
+    const lojas = ESTADO.dados[ESTADO.mesSelecionado][piso] || [];
+    const pendentes = lojas.filter(l => l.status === 'pendente').length;
+    const btn = document.createElement('button');
+    btn.className = 'floor-btn' + (piso === ESTADO.pisoSelecionado ? ' active' : '');
+    btn.innerHTML = `${piso} <span class="floor-count">${lojas.length - pendentes}/${lojas.length}</span>`;
+    btn.onclick = () => { ESTADO.pisoSelecionado = piso; renderizarPisos(); renderizarLojas(); };
+    nav.appendChild(btn);
+  });
+}
+
+function renderizarLojas() {
+  const lista = document.getElementById('storeList');
+  const titulo = document.getElementById('sectionTitle');
+  const resumo = document.getElementById('sectionResumo');
+  const piso = ESTADO.pisoSelecionado;
+  const lojas = ESTADO.dados[ESTADO.mesSelecionado]?.[piso] || [];
+
+  titulo.textContent = `${piso} — ${lojas.length} loja(s)`;
+
+  if (lojas.length > 0) {
+    const count = { aberta:0, fechada:0, tapume:0, nova:0, pendente:0 };
+    lojas.forEach(l => { count[l.status] = (count[l.status] || 0) + 1; });
+    resumo.textContent = `✅${count.aberta} ❌${count.fechada} 🚧${count.tapume} 🆕${count.nova} ⏳${count.pendente}`;
+  } else { resumo.textContent = ''; }
+
+  if (lojas.length === 0) {
+    lista.innerHTML = `<div class="empty-state"><div class="icon">🏬</div><div>Nenhuma loja neste piso</div></div>`;
+    return;
+  }
+
+  lista.innerHTML = '';
+  lojas.forEach(loja => { lista.appendChild(criarCardLoja(loja)); });
+}
+
+function criarCardLoja(loja) {
+  const card = document.createElement('div');
+  card.className = 'store-card';
+  card.dataset.status = loja.status;
+  card.dataset.lojaId = loja.id;
+
+  const botoesHTML = Object.entries(STATUS_MAP).filter(([k]) => k !== 'pendente').map(([key, info]) => `
+    <button class="status-btn${loja.status === key ? ' selected' : ''}"
+            data-value="${key}" data-loja-id="${loja.id}">
+      <span class="ico">${info.ico}</span>
+      <span>${info.label}</span>
+    </button>
+  `).join('');
+
+  const obsTexto = loja.obs ? loja.obs : 'Adicionar observação';
+  const obsClass = loja.obs ? 'obs-btn has-obs' : 'obs-btn';
+
+  card.innerHTML = `
+    <div class="store-header">
+      <div class="store-name">${loja.nome || '—'}</div>
+      ${loja.data ? `<div class="store-date">📅 ${formatarData(loja.data)}</div>` : ''}
+    </div>
+    <div class="status-buttons">${botoesHTML}</div>
+    <div class="store-footer">
+      <button class="${obsClass}" data-loja-id="${loja.id}">
+        📝 <span class="text">${obsTexto}</span>
+      </button>
+      <button class="menu-btn" data-loja-id="${loja.id}" title="Mais opções">⋯</button>
+    </div>
+  `;
+
+  card.querySelectorAll('.status-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => { e.stopPropagation(); marcarStatus(loja.id, btn.dataset.value, card); });
+  });
+  card.querySelector('.obs-btn').addEventListener('click', (e) => { e.stopPropagation(); abrirObservacao(loja.id); });
+  card.querySelector('.menu-btn').addEventListener('click', (e) => { e.stopPropagation(); abrirMenu(loja.id); });
+
+  return card;
+}
+
+async function marcarStatus(lojaId, novoStatus, cardEl) {
+  const piso = ESTADO.pisoSelecionado;
+  const loja = ESTADO.dados[ESTADO.mesSelecionado][piso].find(l => l.id === lojaId);
+  if (!loja) return;
+  const statusFinal = (loja.status === novoStatus) ? 'pendente' : novoStatus;
+  loja.status = statusFinal;
+  loja.data = statusFinal === 'pendente' ? '' : hojeISO();
+
+  cardEl.dataset.status = statusFinal;
+  cardEl.classList.add('saved');
+  setTimeout(() => cardEl.classList.remove('saved'), 600);
+
+  cardEl.querySelectorAll('.status-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.value === statusFinal);
+  });
+
+  const dateEl = cardEl.querySelector('.store-date');
+  if (statusFinal === 'pendente') {
+    if (dateEl) dateEl.remove();
+  } else {
+    const texto = `📅 ${formatarData(loja.data)}`;
+    if (dateEl) { dateEl.textContent = texto; }
+    else {
+      const span = document.createElement('div');
+      span.className = 'store-date';
+      span.textContent = texto;
+      cardEl.querySelector('.store-header').appendChild(span);
+    }
+  }
+
+  renderizarPisos();
+  atualizarProgresso();
+  atualizarResumoInline();
+  debounceSalvar();
+}
+
+let debounceTimer = null;
+function debounceSalvar() {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(async () => { await salvarDados(); }, 600);
+}
+
+function atualizarResumoInline() {
+  const piso = ESTADO.pisoSelecionado;
+  const lojas = ESTADO.dados[ESTADO.mesSelecionado]?.[piso] || [];
+  const count = { aberta:0, fechada:0, tapume:0, nova:0, pendente:0 };
+  lojas.forEach(l => { count[l.status] = (count[l.status] || 0) + 1; });
+  document.getElementById('sectionResumo').textContent =
+    `✅${count.aberta} ❌${count.fechada} 🚧${count.tapume} 🆕${count.nova} ⏳${count.pendente}`;
+}
+
+function atualizarProgresso() {
+  const todas = Object.values(ESTADO.dados[ESTADO.mesSelecionado] || {}).flat();
+  const feitas = todas.filter(l => l.status !== 'pendente').length;
+  const pct = todas.length ? (feitas / todas.length) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+// ============================================================
+// SHEETS
+// ============================================================
+function abrirSheet(id) {
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function fecharSheets() {
+  document.getElementById('overlay').classList.remove('open');
+  document.querySelectorAll('.sheet').forEach(s => s.classList.remove('open'));
+  document.body.style.overflow = '';
+}
+
+// ============================================================
+// OBSERVAÇÃO
+// ============================================================
+function abrirObservacao(lojaId) {
+  const piso = ESTADO.pisoSelecionado;
+  const loja = ESTADO.dados[ESTADO.mesSelecionado][piso].find(l => l.id === lojaId);
+  if (!loja) return;
+  document.getElementById('obsLojaId').value = loja.id;
+  document.getElementById('obsTitulo').textContent = loja.nome;
+  document.getElementById('obsTexto').value = loja.obs || '';
+  document.getElementById('obsData').value = loja.data || hojeISO();
+  abrirSheet('sheetObs');
+  setTimeout(() => document.getElementById('obsTexto').focus(), 300);
+}
+
+async function salvarObservacao() {
+  const id = document.getElementById('obsLojaId').value;
+  const piso = ESTADO.pisoSelecionado;
+  const loja = ESTADO.dados[ESTADO.mesSelecionado][piso].find(l => l.id === id);
+  if (!loja) return;
+  loja.obs = document.getElementById('obsTexto').value.trim();
+  const dataInput = document.getElementById('obsData').value;
+  if (dataInput) loja.data = dataInput;
+  fecharSheets();
+  renderizarLojas();
+  await salvarDados();
+}
+
+// ============================================================
+// MENU DE AÇÕES
+// ============================================================
+function abrirMenu(lojaId) {
+  const piso = ESTADO.pisoSelecionado;
+  const loja = ESTADO.dados[ESTADO.mesSelecionado][piso].find(l => l.id === lojaId);
+  if (!loja) return;
+  lojaMenuAtual = loja;
+  lojaMenuPiso = piso;
+  document.getElementById('menuTitulo').textContent = loja.nome;
+  document.getElementById('menuSubtitulo').textContent = `Piso ${piso}`;
+  abrirSheet('sheetMenu');
+}
+
+// ============================================================
+// HISTÓRICO POR LOJA
+// ============================================================
+function verHistoricoLoja() {
+  if (!lojaMenuAtual) return;
+  const nomeLoja = lojaMenuAtual.nome;
+  const meses = Object.keys(ESTADO.dados).sort();
+
+  const ocorrencias = [];
+  meses.forEach(mes => {
+    const pisosDoMes = ESTADO.dados[mes];
+    Object.keys(pisosDoMes).forEach(piso => {
+      pisosDoMes[piso].forEach(loja => {
+        if (loja.nome === nomeLoja) {
+          ocorrencias.push({ mes, piso, ...loja });
+        }
+      });
+    });
+  });
+
+  document.getElementById('histTitulo').textContent = nomeLoja;
+  document.getElementById('histSubtitulo').textContent =
+    `${ocorrencias.length} registro(s) em ${Object.keys(ESTADO.dados).length} mês(es)`;
+
+  if (ocorrencias.length === 0) {
+    document.getElementById('histBody').innerHTML = `<div class="empty-state"><div class="icon">📭</div><div>Nenhum registro encontrado</div></div>`;
+    fecharSheets();
+    setTimeout(() => abrirSheet('sheetHistorico'), 350);
+    return;
+  }
+
+  const ordenado = [...ocorrencias].reverse();
+
+  let html = '';
+  ordenado.forEach(o => {
+    const info = STATUS_MAP[o.status] || STATUS_MAP.pendente;
+    const obsHTML = o.obs ? `<div class="hist-obs">📝 ${o.obs}</div>` : '';
+    const dataHTML = o.data ? `<div class="hist-data">Vistoriado em ${formatarData(o.data)}</div>` : '';
+    const pisoHTML = o.piso !== lojaMenuPiso ? ` · Piso ${o.piso}` : '';
+
+    html += `
+      <div class="hist-item">
+        <div class="hist-mes">${nomeMesCurto(o.mes)}</div>
+        <div class="hist-info">
+          <div class="hist-status ${o.status}">${info.ico} ${info.label}${pisoHTML}</div>
+          ${obsHTML}
+          ${dataHTML}
+        </div>
+      </div>
+    `;
+  });
+
+  document.getElementById('histBody').innerHTML = html;
+  fecharSheets();
+  setTimeout(() => abrirSheet('sheetHistorico'), 350);
+}
+
+// ============================================================
+// EDITAR / LIMPAR / EXCLUIR
+// ============================================================
+function editarNome() {
+  if (!lojaMenuAtual) return;
+  document.getElementById('editLojaId').value = lojaMenuAtual.id;
+  document.getElementById('editNome').value = lojaMenuAtual.nome;
+  fecharSheets();
+  setTimeout(() => abrirSheet('sheetEditar'), 350);
+}
+
+async function salvarEdicaoNome() {
+  const id = document.getElementById('editLojaId').value;
+  const piso = lojaMenuPiso || ESTADO.pisoSelecionado;
+  const loja = ESTADO.dados[ESTADO.mesSelecionado][piso].find(l => l.id === id);
+  if (!loja) return;
+  loja.nome = document.getElementById('editNome').value.trim() || loja.nome;
+  fecharSheets();
+  renderizarLojas();
+  await salvarDados();
+}
+
+async function limparStatusLoja() {
+  if (!lojaMenuAtual) return;
+  if (!confirm(`Voltar "${lojaMenuAtual.nome}" para pendente?`)) return;
+  lojaMenuAtual.status = 'pendente';
+  lojaMenuAtual.data = '';
+  fecharSheets();
+  renderizarPisos();
+  renderizarLojas();
+  atualizarProgresso();
+  await salvarDados();
+}
+
+async function excluirLojaDoMes() {
+  if (!lojaMenuAtual) return;
+  if (!confirm(`Excluir "${lojaMenuAtual.nome}" do roteiro DESTE mês?\n\nIsso NÃO afeta os outros meses.`)) return;
+  const piso = lojaMenuPiso || ESTADO.pisoSelecionado;
+  const arr = ESTADO.dados[ESTADO.mesSelecionado][piso];
+  const idx = arr.findIndex(l => l.id === lojaMenuAtual.id);
+  if (idx >= 0) arr.splice(idx, 1);
+  fecharSheets();
+  renderizarPisos();
+  renderizarLojas();
+  atualizarProgresso();
+  await salvarDados();
+}
+
+// ============================================================
+// ADICIONAR LOJA
+// ============================================================
+function abrirAdicionar() {
+  const selectPiso = document.getElementById('addPiso');
+  selectPiso.innerHTML = '';
+  Object.keys(ESTADO.dados[ESTADO.mesSelecionado]).forEach(piso => {
+    const opt = document.createElement('option');
+    opt.value = piso; opt.textContent = piso;
+    if (piso === ESTADO.pisoSelecionado) opt.selected = true;
+    selectPiso.appendChild(opt);
+  });
+  document.getElementById('addNome').value = '';
+  document.getElementById('addStatus').value = 'nova';
+  abrirSheet('sheetAdicionar');
+}
+
+async function salvarNovaLoja() {
+  const nome = document.getElementById('addNome').value.trim();
+  const piso = document.getElementById('addPiso').value;
+  const status = document.getElementById('addStatus').value;
+  if (!nome) { alert('Informe o nome da loja'); return; }
+  const nova = {
+    id: gerarId(), nome,
+    status, obs: '', data: status === 'pendente' ? '' : hojeISO()
+  };
+  ESTADO.dados[ESTADO.mesSelecionado][piso].push(nova);
+  fecharSheets();
+  ESTADO.pisoSelecionado = piso;
+  renderizarPisos();
+  renderizarLojas();
+  atualizarProgresso();
+  await salvarDados();
+}
+
+// ============================================================
+// NAVEGAÇÃO ENTRE MESES
+// ============================================================
+function abrirSeletorMes() {
+  document.getElementById('inputMes').value = ESTADO.mesSelecionado;
+  renderizarListaMeses();
+  abrirSheet('sheetMes');
+}
+
+function abrirNovaVistoria() {
+  const sugestao = mesAnteriorChave(mesAtualChave());
+  document.getElementById('inputMes').value = sugestao;
+  renderizarListaMeses();
+  document.querySelectorAll('.mes-lista-item').forEach(el => {
+    el.classList.toggle('selecionado', el.dataset.mes === sugestao);
+  });
+  abrirSheet('sheetMes');
+}
+
+function renderizarListaMeses() {
+  const container = document.getElementById('listaMesesExistentes');
+  const meses = Object.keys(ESTADO.dados).sort().reverse();
+  if (meses.length === 0) { container.innerHTML = ''; return; }
+  let html = '<div class="form-label" style="margin-top:16px;">Meses com dados salvos</div>';
+  meses.forEach(m => {
+    const lojas = Object.values(ESTADO.dados[m]).flat();
+    const feitas = lojas.filter(l => l.status !== 'pendente').length;
+    const sel = m === ESTADO.mesSelecionado ? ' selecionado' : '';
+    html += `<div class="mes-lista-item${sel}" data-mes="${m}" onclick="selecionarMesNaLista('${m}', event)">
+      <span class="resumo-label">${nomeMesCurto(m)}</span>
+      <span class="resumo-valor">${feitas}/${lojas.length}</span>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+function selecionarMesNaLista(m, ev) {
+  document.getElementById('inputMes').value = m;
+  document.querySelectorAll('.mes-lista-item').forEach(el => el.classList.remove('selecionado'));
+  ev.currentTarget.classList.add('selecionado');
+}
+
+async function confirmarMes() {
+  const novo = document.getElementById('inputMes').value;
+  if (!novo) { alert('Escolha um mês'); return; }
+  if (!ESTADO.dados[novo]) {
+    ESTADO.dados[novo] = construirMesBase();
+    mostrarSync('Novo mês criado');
+  }
+  ESTADO.mesSelecionado = novo;
+  ESTADO.pisoSelecionado = Object.keys(ESTADO.dados[novo])[0];
+  fecharSheets();
+  renderizarTudo();
+  await salvarDados();
+}
+
+async function resetarRoteiroMes() {
+  if (!confirm(`Isso vai SUBSTITUIR o roteiro de ${nomeMesCurto(ESTADO.mesSelecionado)} pelo roteiro base original.\n\nTodas as vistorias deste mês serão perdidas.\n\nContinuar?`)) return;
+  ESTADO.dados[ESTADO.mesSelecionado] = construirMesBase();
+  ESTADO.pisoSelecionado = Object.keys(ESTADO.dados[ESTADO.mesSelecionado])[0];
+  fecharSheets();
+  renderizarTudo();
+  await salvarDados();
+  alert('✅ Roteiro resetado.');
+}
+
+// ============================================================
+// EXPORTAR CSV
+// ============================================================
+function exportarCSV() {
+  const mesAtual = ESTADO.mesSelecionado;
+  const mesAnterior = encontrarMesAnterior();
+
+  const anteriorMap = new Map();
+  if (mesAnterior) {
+    Object.keys(ESTADO.dados[mesAnterior]).forEach(piso => {
+      ESTADO.dados[mesAnterior][piso].forEach(loja => {
+        anteriorMap.set(loja.nome, { status: loja.status, obs: loja.obs || '', piso });
+      });
+    });
+  }
+
+  const linhas = [];
+  linhas.push([
+    'Piso',
+    'Loja',
+    'Status Anterior',
+    'Status Atual',
+    'Mudou?',
+    'Observação',
+    'Data Vistoria'
+  ].join(';'));
+
+  const todas = [];
+  Object.keys(ESTADO.dados[mesAtual]).forEach(piso => {
+    ESTADO.dados[mesAtual][piso].forEach(loja => {
+      todas.push({ piso, ...loja });
+    });
+  });
+
+  let totalMudancas = 0;
+  let totalAbertas = 0, totalFechadas = 0, totalTapumes = 0, totalNovas = 0, totalPendentes = 0;
+
+  todas.forEach(loja => {
+    const anterior = anteriorMap.get(loja.nome);
+    const statusAnt = anterior ? anterior.status : '—';
+    const statusAtual = loja.status;
+
+    const labelAnt = anterior ? (STATUS_MAP[statusAnt]?.label || statusAnt) : 'Novo';
+    const labelAtual = STATUS_MAP[statusAtual]?.label || statusAtual;
+
+    const ehNovo = !anterior;
+    const mudou = anterior && statusAnt !== statusAtual;
+    const flagMudanca = ehNovo ? '🆕 Nova no roteiro' : (mudou ? '⚠️ Mudou' : '');
+
+    if (ehNovo || mudou) totalMudancas++;
+
+    if (statusAtual === 'aberta') totalAbertas++;
+    else if (statusAtual === 'fechada') totalFechadas++;
+    else if (statusAtual === 'tapume') totalTapumes++;
+    else if (statusAtual === 'nova') totalNovas++;
+    else if (statusAtual === 'pendente') totalPendentes++;
+
+    const sanitize = (txt) => `"${String(txt || '').replace(/"/g, '""')}"`;
+
+    linhas.push([
+      sanitize(loja.piso),
+      sanitize(loja.nome),
+      sanitize(labelAnt),
+      sanitize(labelAtual),
+      sanitize(flagMudanca),
+      sanitize(loja.obs || ''),
+      sanitize(loja.data ? formatarData(loja.data) : '')
+    ].join(';'));
+  });
+
+  linhas.push('');
+  linhas.push(`RESUMO DA VISTORIA — ${nomeMesLongo(mesAtual)}`);
+  linhas.push(`Comparado com: ${mesAnterior ? nomeMesLongo(mesAnterior) : 'Nenhum mês anterior'}`);
+  linhas.push(`Total de lojas: ${todas.length}`);
+  linhas.push(`Abertas: ${totalAbertas}`);
+  linhas.push(`Fechadas: ${totalFechadas}`);
+  linhas.push(`Tapumes: ${totalTapumes}`);
+  linhas.push(`Novas: ${totalNovas}`);
+  linhas.push(`Pendentes: ${totalPendentes}`);
+  linhas.push(`Mudanças em relação ao mês anterior: ${totalMudancas}`);
+
+  const csvContent = '\uFEFF' + linhas.join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `vistoria_${mesAtual}${mesAnterior ? '_vs_' + mesAnterior : ''}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  mostrarSync('✓ CSV exportado');
+}
+
+// ============================================================
+// CÓPIA DO MÊS ANTERIOR
+// ============================================================
+function encontrarMesAnterior() {
+  const meses = Object.keys(ESTADO.dados).filter(m => m < ESTADO.mesSelecionado).sort().reverse();
+  return meses[0] || null;
+}
+
+function verificarMesAnterior() {
+  const banner = document.getElementById('copyBanner');
+  banner.classList.remove('show');
+  if (sessionStorage.getItem('copia_ignorada_' + ESTADO.mesSelecionado)) return;
+  const lojasAtuais = Object.values(ESTADO.dados[ESTADO.mesSelecionado] || {}).flat();
+  if (lojasAtuais.some(l => l.status !== 'pendente')) return;
+  const anterior = encontrarMesAnterior();
+  if (!anterior) return;
+  mesAnteriorDetectado = anterior;
+  const lojasAnt = Object.values(ESTADO.dados[anterior]).flat();
+  const abertas = lojasAnt.filter(l => l.status === 'aberta').length;
+  const fechadas = lojasAnt.filter(l => l.status === 'fechada').length;
+  const tapumes = lojasAnt.filter(l => l.status === 'tapume').length;
+  const novas = lojasAnt.filter(l => l.status === 'nova').length;
+  document.getElementById('copyBannerText').innerHTML = `
+    Última vistoria: <strong>${nomeMesLongo(anterior)}</strong><br>
+    ${lojasAnt.length} lojas · ${abertas} abertas · ${fechadas} fechadas · ${tapumes} tapumes · ${novas} novas
+  `;
+  banner.classList.add('show');
+}
+
+function ignorarCopia() {
+  document.getElementById('copyBanner').classList.remove('show');
+  sessionStorage.setItem('copia_ignorada_' + ESTADO.mesSelecionado, '1');
+}
+
+function abrirResumoCopia() {
+  if (!mesAnteriorDetectado) return;
+  const anterior = mesAnteriorDetectado;
+  document.getElementById('resumoSubtitulo').textContent =
+    `De ${nomeMesLongo(anterior)} para ${nomeMesLongo(ESTADO.mesSelecionado)}`;
+  const lojasAnt = ESTADO.dados[anterior];
+  let html = '';
+  const totalAnt = Object.values(lojasAnt).flat().length;
+  html += `<div class="resumo-destaque">
+    <strong>Será copiado:</strong> nome e piso de <strong>${totalAnt} lojas</strong><br>
+    <strong>Será resetado:</strong> status, observações e datas
+  </div>`;
+  Object.keys(lojasAnt).forEach(piso => {
+    const lojas = lojasAnt[piso];
+    html += `<div class="form-label" style="margin-top:16px;">${piso} — ${lojas.length} loja(s)</div>`;
+    lojas.slice(0, 5).forEach(l => {
+      const st = STATUS_MAP[l.status];
+      html += `<div class="resumo-item">
+        <span class="resumo-label">${l.nome}</span>
+        <span class="resumo-valor">${st ? st.ico + ' ' + st.label : '⏳ Pendente'}</span>
+      </div>`;
+    });
+    if (lojas.length > 5) html += `<div class="resumo-item" style="justify-content:center;color:var(--gray);font-style:italic;">+ ${lojas.length - 5} loja(s)...</div>`;
+  });
+  document.getElementById('resumoBody').innerHTML = html;
+  abrirSheet('sheetResumoCopia');
+}
+
+async function confirmarCopia() {
+  if (!mesAnteriorDetectado) return;
+  const anterior = mesAnteriorDetectado;
+  const atual = ESTADO.mesSelecionado;
+  const dadosAnterior = ESTADO.dados[anterior];
+  const novoMes = {};
+  Object.keys(dadosAnterior).forEach(piso => {
+    novoMes[piso] = dadosAnterior[piso].map(loja => ({
+      id: gerarId(), nome: loja.nome,
+      status: 'pendente', obs: '', data: ''
+    }));
+  });
+  ESTADO.dados[atual] = novoMes;
+  ESTADO.pisoSelecionado = Object.keys(novoMes)[0];
+  fecharSheets();
+  document.getElementById('copyBanner').classList.remove('show');
+  renderizarTudo();
+  await salvarDados();
+  const total = Object.values(novoMes).flat().length;
+  setTimeout(() => alert(`✅ Roteiro copiado! ${total} lojas carregadas.`), 150);
+}
+
+// ============================================================
+// EVENTOS
+// ============================================================
+document.getElementById('overlay').addEventListener('click', fecharSheets);
+document.getElementById('btnSalvarObs').addEventListener('click', salvarObservacao);
+document.getElementById('btnSalvarEdit').addEventListener('click', salvarEdicaoNome);
+document.getElementById('btnSalvarAdd').addEventListener('click', salvarNovaLoja);
+document.getElementById('fabAdd').addEventListener('click', abrirAdicionar);
+
+window.abrirSeletorMes = abrirSeletorMes;
+window.abrirNovaVistoria = abrirNovaVistoria;
+window.fecharSheets = fecharSheets;
+window.confirmarMes = confirmarMes;
+window.ignorarCopia = ignorarCopia;
+window.abrirResumoCopia = abrirResumoCopia;
+window.confirmarCopia = confirmarCopia;
+window.selecionarMesNaLista = selecionarMesNaLista;
+window.resetarRoteiroMes = resetarRoteiroMes;
+window.editarNome = editarNome;
+window.limparStatusLoja = limparStatusLoja;
+window.excluirLojaDoMes = excluirLojaDoMes;
+window.verHistoricoLoja = verHistoricoLoja;
+window.exportarCSV = exportarCSV;
+</script>
+</body>
+</html>

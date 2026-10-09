@@ -1,0 +1,630 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f3f4f6;
+    color: #111827;
+    min-height: 100vh;
+}
+
+
+/* =========================
+   TOPO
+========================= */
+
+.topbar {
+    height: 70px;
+    background: #111827;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 18px;
+
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.topbar h1 {
+    font-size: 20px;
+}
+
+.topbar span {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.btn-menu {
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 25px;
+}
+
+
+/* =========================
+   CONTAINER
+========================= */
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    padding: 18px;
+}
+
+.tela {
+    width: 100%;
+}
+
+.oculto {
+    display: none !important;
+}
+
+
+/* =========================
+   INÍCIO
+========================= */
+
+.boas-vindas {
+    margin-bottom: 20px;
+}
+
+.boas-vindas h2 {
+    font-size: 25px;
+    margin-bottom: 7px;
+}
+
+.boas-vindas p {
+    color: #6b7280;
+}
+
+
+/* =========================
+   RESUMO
+========================= */
+
+.card-resumo {
+    background: white;
+    border-radius: 16px;
+    padding: 18px;
+
+    display: flex;
+    justify-content: space-around;
+
+    margin-bottom: 25px;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,.05);
+}
+
+.resumo-item {
+    text-align: center;
+}
+
+.resumo-item strong {
+    display: block;
+    font-size: 22px;
+}
+
+.resumo-item span {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+
+/* =========================
+   PISOS
+========================= */
+
+.titulo-secao {
+    margin-bottom: 12px;
+}
+
+.lista-pisos {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.piso-card {
+    width: 100%;
+    border: none;
+
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 15px;
+
+    display: flex;
+    align-items: center;
+
+    text-align: left;
+
+    box-shadow: 0 2px 7px rgba(0,0,0,.05);
+}
+
+.piso-numero {
+    width: 48px;
+    height: 48px;
+
+    border-radius: 12px;
+
+    background: #111827;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: bold;
+    font-size: 20px;
+
+    margin-right: 14px;
+}
+
+.piso-info {
+    flex: 1;
+}
+
+.piso-info strong {
+    display: block;
+}
+
+.piso-info span {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.seta {
+    font-size: 28px;
+    color: #9ca3af;
+}
+
+
+/* =========================
+   CABEÇALHOS
+========================= */
+
+.cabecalho-piso,
+.cabecalho-loja {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    margin-bottom: 20px;
+}
+
+.cabecalho-piso h2,
+.cabecalho-loja h2 {
+    font-size: 24px;
+}
+
+.label-pequeno {
+    color: #6b7280;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.btn-voltar {
+    width: 42px;
+    height: 42px;
+
+    border: none;
+    border-radius: 12px;
+
+    background: white;
+
+    font-size: 22px;
+}
+
+
+/* =========================
+   PROGRESSO
+========================= */
+
+.progresso-container {
+    background: white;
+
+    padding: 15px;
+
+    border-radius: 14px;
+
+    margin-bottom: 15px;
+}
+
+.progresso-texto {
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: 9px;
+
+    font-size: 13px;
+}
+
+.progresso-texto span {
+    color: #6b7280;
+}
+
+.barra {
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.barra-preenchida {
+    height: 100%;
+    width: 0%;
+
+    background: #22c55e;
+
+    transition: .3s;
+}
+
+
+/* =========================
+   BUSCA
+========================= */
+
+.campo-busca {
+    background: white;
+
+    border-radius: 12px;
+
+    padding: 12px 14px;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 15px;
+}
+
+.campo-busca input {
+    width: 100%;
+
+    border: none;
+    outline: none;
+
+    font-size: 16px;
+}
+
+
+/* =========================
+   LOJAS
+========================= */
+
+.lista-lojas {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.loja-card {
+    background: white;
+
+    border-radius: 13px;
+
+    padding: 14px;
+
+    display: flex;
+    align-items: center;
+
+    border-left: 5px solid #d1d5db;
+}
+
+.loja-numero {
+    width: 55px;
+
+    font-weight: bold;
+    font-size: 17px;
+}
+
+.loja-info {
+    flex: 1;
+}
+
+.loja-info strong {
+    display: block;
+}
+
+.loja-info span {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.status {
+    font-size: 20px;
+}
+
+
+/* =========================
+   HISTÓRICO
+========================= */
+
+.historico-card {
+    background: #eef2ff;
+
+    border-radius: 15px;
+
+    padding: 16px;
+
+    margin-bottom: 22px;
+}
+
+.historico-titulo {
+    font-size: 12px;
+    font-weight: bold;
+
+    color: #4f46e5;
+
+    margin-bottom: 12px;
+}
+
+.historico-info {
+    display: flex;
+    gap: 35px;
+
+    margin-bottom: 10px;
+}
+
+.historico-info span {
+    display: block;
+
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.historico-info strong {
+    font-size: 14px;
+}
+
+.historico-card p {
+    font-size: 13px;
+    color: #4b5563;
+}
+
+
+/* =========================
+   SITUAÇÕES
+========================= */
+
+.formulario h3 {
+    margin-bottom: 12px;
+}
+
+.opcoes-situacao {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+
+    margin-bottom: 20px;
+}
+
+.situacao {
+    background: white;
+
+    border: 2px solid transparent;
+
+    border-radius: 13px;
+
+    padding: 14px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    font-size: 14px;
+}
+
+.situacao.selecionada {
+    border-color: #2563eb;
+    background: #eff6ff;
+}
+
+.icone {
+    font-size: 20px;
+}
+
+
+/* =========================
+   FORMULÁRIO
+========================= */
+
+.campo-label {
+    display: block;
+
+    font-weight: bold;
+    font-size: 14px;
+
+    margin-bottom: 18px;
+}
+
+textarea {
+    width: 100%;
+
+    margin-top: 8px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 12px;
+
+    padding: 12px;
+
+    font-family: inherit;
+
+    font-size: 15px;
+
+    resize: vertical;
+}
+
+.foto-area {
+    margin-top: 8px;
+
+    background: white;
+
+    border: 2px dashed #d1d5db;
+
+    border-radius: 12px;
+
+    padding: 25px;
+
+    text-align: center;
+
+    position: relative;
+}
+
+.foto-area input {
+    position: absolute;
+
+    inset: 0;
+
+    opacity: 0;
+
+}
+
+
+/* =========================
+   BOTÕES
+========================= */
+
+.btn-salvar {
+    width: 100%;
+
+    border: none;
+
+    border-radius: 13px;
+
+    background: #2563eb;
+
+    color: white;
+
+    padding: 16px;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    margin-top: 10px;
+}
+
+.btn-secundario {
+    width: 100%;
+
+    border: none;
+
+    background: white;
+
+    color: #374151;
+
+    padding: 15px;
+
+    border-radius: 13px;
+
+    margin-top: 10px;
+}
+
+
+/* =========================
+   FINAL
+========================= */
+
+.resumo-final {
+    text-align: center;
+
+    padding: 50px 10px;
+}
+
+.icone-sucesso {
+    width: 70px;
+    height: 70px;
+
+    margin: 0 auto 20px;
+
+    border-radius: 50%;
+
+    background: #dcfce7;
+
+    color: #16a34a;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 35px;
+}
+
+.resumo-final p {
+    color: #6b7280;
+    margin: 10px 0 25px;
+}
+
+
+/* =========================
+   MENU
+========================= */
+
+.menu-lateral {
+    position: fixed;
+
+    top: 0;
+    right: -280px;
+
+    width: 280px;
+    height: 100vh;
+
+    background: white;
+
+    z-index: 500;
+
+    padding: 25px;
+
+    box-shadow: -5px 0 20px rgba(0,0,0,.15);
+
+    transition: .3s;
+}
+
+.menu-lateral.aberto {
+    right: 0;
+}
+
+.menu-lateral > button:first-child {
+    float: right;
+
+    border: none;
+    background: none;
+
+    font-size: 20px;
+}
+
+.menu-lateral h3 {
+    margin-top: 40px;
+    margin-bottom: 25px;
+}
+
+.menu-lateral button:not(:first-child) {
+    display: block;
+
+    width: 100%;
+
+    text-align: left;
+
+    padding: 15px;
+
+    border: none;
+
+    background: transparent;
+
+    font-size: 15px;
+}
